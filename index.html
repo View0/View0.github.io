@@ -69,6 +69,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mingw" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/10/24/mingw/" class="article-date">
+  <time class="dt-published" datetime="2024-10-24T08:26:12.000Z" itemprop="datePublished">2024-10-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/10/24/mingw/">mingw</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>之前在实践线程池项目（基于C++11）时在Visual Studio中顺利运行，用CMakeLists改到Linux系统下后顺利运行，但在windows系统中却报错。</p>
+<p>后来获知是因为本地的Mingw是win32版本的，而win32版本并不支持C++11的多线程功能。</p>
+<ul>
+<li>posix 和 win32 的区别是指编译器使用的线程模型。posix 是一种 UNIX API 标准，而 win32 是 Windows 的 API 标准。这两者之间有一些区别，例如在 mingw-w64 中，<mark>使用 posix 线程将启用 C++11&#x2F;C11 多线程功能，并使 libgcc 依赖于 libwinpthreads。而使用 win32 线程则不会启用 C++11 多线程功能。</mark></li>
+</ul>
+<p><img src="https://pic2.zhimg.com/v2-4719a6731a4217c3d4ad08b2b3d4e499_r.jpg" alt="image.png"></p>
+<p>将mingw更换为posix标准后执行<code>cmake -G &quot;MinGW Makefiles&quot; ..</code>和<code>mingw32-make</code>后顺利编译！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/10/24/mingw/" data-id="cm2n3yvp40000d0yjgrr3ctn6" data-title="mingw" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Docker" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/10/22/Docker/" class="article-date">
@@ -260,7 +307,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A1%86%E6%9E%B6/" rel="tag">框架</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A1%86%E6%9E%B6/" rel="tag">框架</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
     </div>
   </div>
 
@@ -270,7 +317,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/%E6%A1%86%E6%9E%B6/" style="font-size: 10px;">框架</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
+      <a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 10px;">工具</a> <a href="/tags/%E6%A1%86%E6%9E%B6/" style="font-size: 10px;">框架</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 10px;">运维</a>
     </div>
   </div>
 
@@ -290,6 +337,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2024/10/24/mingw/">mingw</a>
+          </li>
         
           <li>
             <a href="/2024/10/22/Docker/">Docker</a>
