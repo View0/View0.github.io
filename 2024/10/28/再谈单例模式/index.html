@@ -4,14 +4,19 @@
   <meta charset="utf-8">
   
   
-  <title>Hexo</title>
+  <title>再谈单例模式 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="全局范围内，某个类的实例有且仅有一个，通过这个唯一实例向其他模块提供数据的全局访问，这种模式即为单例模式（典型应用：任务队列）  饿汉模式 饿汉模式即在类加载时立刻进行实例化，是线程安全的！  1234567891011121314151617181920212223242526272829303132class TaskQueue&#123;public:    &#x2F;&#x2F; &#x3D; delete 代表函">
+<meta property="og:type" content="article">
+<meta property="og:title" content="再谈单例模式">
+<meta property="og:url" content="http://example.com/2024/10/28/%E5%86%8D%E8%B0%88%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="全局范围内，某个类的实例有且仅有一个，通过这个唯一实例向其他模块提供数据的全局访问，这种模式即为单例模式（典型应用：任务队列）  饿汉模式 饿汉模式即在类加载时立刻进行实例化，是线程安全的！  1234567891011121314151617181920212223242526272829303132class TaskQueue&#123;public:    &#x2F;&#x2F; &#x3D; delete 代表函">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-10-28T06:33:50.000Z">
+<meta property="article:modified_time" content="2024-10-28T11:25:49.438Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -67,9 +72,7 @@
 </header>
 
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-再谈单例模式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-再谈单例模式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/10/28/%E5%86%8D%E8%B0%88%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="article-date">
   <time class="dt-published" datetime="2024-10-28T06:33:50.000Z" itemprop="datePublished">2024-10-28</time>
@@ -82,8 +85,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/10/28/%E5%86%8D%E8%B0%88%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">再谈单例模式</a>
+    <h1 class="p-name article-title" itemprop="headline name">
+      再谈单例模式
     </h1>
   
 
@@ -121,236 +124,19 @@
     </footer>
   </div>
   
-</article>
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-mingw" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/10/24/mingw/" class="article-date">
-  <time class="dt-published" datetime="2024-10-24T08:26:12.000Z" itemprop="datePublished">2024-10-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/10/24/mingw/">mingw</a>
-    </h1>
+    <a href="/2024/10/24/mingw/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">mingw</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>之前在实践线程池项目（基于C++11）时在Visual Studio中顺利运行，用CMakeLists改到Linux系统下后顺利运行，但在windows系统中却报错。</p>
-<p>后来获知是因为本地的Mingw是win32版本的，而win32版本并不支持C++11的多线程功能。</p>
-<ul>
-<li>posix 和 win32 的区别是指编译器使用的线程模型。posix 是一种 UNIX API 标准，而 win32 是 Windows 的 API 标准。这两者之间有一些区别，例如在 mingw-w64 中，<mark>使用 posix 线程将启用 C++11&#x2F;C11 多线程功能，并使 libgcc 依赖于 libwinpthreads。而使用 win32 线程则不会启用 C++11 多线程功能。</mark></li>
-</ul>
-<p><img src="https://pic2.zhimg.com/v2-4719a6731a4217c3d4ad08b2b3d4e499_r.jpg" alt="image.png"></p>
-<p>将mingw更换为posix标准后执行<code>cmake -G &quot;MinGW Makefiles&quot; ..</code>和<code>mingw32-make</code>后顺利编译！</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2024/10/24/mingw/" data-id="cm2n3yvp40000d0yjgrr3ctn6" data-title="mingw" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
-
-
-
-  
-    <article id="post-Docker" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/10/22/Docker/" class="article-date">
-  <time class="dt-published" datetime="2024-10-22T10:21:06.000Z" itemprop="datePublished">2024-10-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/10/22/Docker/">Docker</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="本机环境"><a href="#本机环境" class="headerlink" title="本机环境"></a>本机环境</h2><p>Ubuntu 22.04 → <a target="_blank" rel="noopener" href="https://blog.csdn.net/shenliu128/article/details/127262743">安装方式</a><br>Docker version 26.0.2</p>
-<h2 id="Docker常见命令"><a href="#Docker常见命令" class="headerlink" title="Docker常见命令"></a>Docker常见命令</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看docker镜像</span></span><br><span class="line"><span class="built_in">sudo</span> docker images</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于镜像启动一个容器并自动启动</span></span><br><span class="line"><span class="built_in">sudo</span> docker run -itd --name container_name image_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看各容器状态</span></span><br><span class="line"><span class="built_in">sudo</span> docker ps -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动/暂停容器</span></span><br><span class="line"><span class="built_in">sudo</span> docker start container_ID</span><br><span class="line"><span class="built_in">sudo</span> docker stop container_ID</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入容器内部</span></span><br><span class="line"><span class="built_in">sudo</span> docker <span class="built_in">exec</span> -it container_ID /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除容器</span></span><br><span class="line"><span class="built_in">sudo</span> docker <span class="built_in">rm</span> container_ID</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除镜像</span></span><br><span class="line"><span class="built_in">sudo</span> docker rmi image_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理Docker缓存 -&gt; 会将未开启容器的镜像也清理</span></span><br><span class="line">docker system prune -a</span><br></pre></td></tr></table></figure>
-
-<h2 id="Docker的Ubuntu镜像换源"><a href="#Docker的Ubuntu镜像换源" class="headerlink" title="Docker的Ubuntu镜像换源"></a>Docker的Ubuntu镜像换源</h2><p><strong>前提</strong>：准备好sources.list到Dockerfile同级文件夹中！</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 基础镜像</span></span><br><span class="line">FROM ubuntu:22.04</span><br><span class="line"></span><br><span class="line"><span class="comment"># 拷贝本地配置</span></span><br><span class="line">ADD .  /home</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 指定后续工作目录</span></span><br><span class="line">WORKDIR /home</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对镜像换源</span></span><br><span class="line">RUN <span class="built_in">cp</span> /etc/apt/sources.list /etc/apt/sources.list.backup</span><br><span class="line">RUN <span class="built_in">rm</span> -rf /etc/apt/sources.list</span><br><span class="line">RUN <span class="built_in">cp</span> /home/sources.list /etc/apt/sources.list</span><br><span class="line">RUN apt update</span><br><span class="line">RUN apt upgrade -y</span><br></pre></td></tr></table></figure>
-<h2 id="Docker打包镜像并导入镜像"><a href="#Docker打包镜像并导入镜像" class="headerlink" title="Docker打包镜像并导入镜像"></a>Docker打包镜像并导入镜像</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 打包镜像 -&gt; 以打包hello-world镜像为例</span></span><br><span class="line"><span class="built_in">sudo</span> docker save hello-world -o hello-world.tar</span><br><span class="line"></span><br><span class="line"><span class="comment"># ubuntu22.04打包之后文件夹权限有问题，可以进行修改</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">chmod</span> 777 hello-world.tar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载镜像</span></span><br><span class="line"><span class="built_in">sudo</span> docker load -i hello-world.tar</span><br></pre></td></tr></table></figure>
-<h2 id="通过linux的X11（C-S）共享图像显示窗口给Docker容器"><a href="#通过linux的X11（C-S）共享图像显示窗口给Docker容器" class="headerlink" title="通过linux的X11（C&#x2F;S）共享图像显示窗口给Docker容器"></a>通过linux的X11（C&#x2F;S）共享图像显示窗口给Docker容器</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/a806689294/article/details/111462627">参考</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#安装xserver -&gt; ubuntu 22.04好像已有</span></span><br><span class="line"><span class="variable">$sudo</span> apt install x11-xserver-utils</span><br><span class="line"><span class="comment">#许可所有用户都可访问xserver    注意加号前应有空格</span></span><br><span class="line"><span class="variable">$xhost</span> +</span><br><span class="line"><span class="comment"># 查看当前显示的环境变量值 (要在显示屏查看，其他ssh终端不行) </span></span><br><span class="line"><span class="variable">$echo</span> <span class="variable">$DISPLAY</span>   <span class="comment">#假设为:0</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="如何创建支持X11转发的容器？"><a href="#如何创建支持X11转发的容器？" class="headerlink" title="如何创建支持X11转发的容器？"></a>如何创建支持X11转发的容器？</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> docker run -itd --name paddle-contariner --privileged -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/localtime:/etc/localtime:ro -e DISPLAY=:0 --device /dev/video0:/dev/video0 paddle:latest</span><br></pre></td></tr></table></figure>
-<ul>
-<li>–name 容器名</li>
-<li>–privileged 给予容器额外的权限，使其能够访问宿主机的所有设备，包括设备驱动程序，类似于root用户</li>
-<li>-v &#x2F;tmp&#x2F;.X11-unix:&#x2F;tmp&#x2F;.X11-unix 创建一个挂载点，将宿主机的 &#x2F;tmp&#x2F;.X11-unix 目录挂载到容器内的相同路径, 用于X11转发，允许容器访问宿主机的X服务器</li>
-<li>-v &#x2F;etc&#x2F;localtime:&#x2F;etc&#x2F;localtime:ro 将宿主机的 &#x2F;etc&#x2F;localtime 文件挂载到容器中，并设置为只读（ro）。这样可以确保容器的时间与宿主机同步</li>
-<li>-e DISPLAY&#x3D;:0 设置环境变量 DISPLAY，用于X11转发，指定X客户端连接到X服务器的显示编号</li>
-<li>–device &#x2F;dev&#x2F;video0:&#x2F;dev&#x2F;video0 将宿主机的 &#x2F;dev&#x2F;video0 设备（通常是USB摄像头）挂载到容器内，使得容器可以访问摄像头</li>
-<li>paddle:latest 指定要使用的Docker镜像，这里是 paddle 镜像的最新版本（latest 标签）</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2024/10/22/Docker/" data-id="cm2kaqdbk0000q1yj3b9o9zjh" data-title="Docker" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-RPC原理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/10/22/RPC%E5%8E%9F%E7%90%86/" class="article-date">
-  <time class="dt-published" datetime="2024-10-22T10:12:21.000Z" itemprop="datePublished">2024-10-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/10/22/RPC%E5%8E%9F%E7%90%86/">RPC原理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>RPC（Remote Procedure Call），即远程过程调用。它允许像调用本地服务一样调用远程服务。</li>
-<li>RPC属于C&#x2F;S模式，经典实现是一个通过发送请求-接收回应进行信息交互的系统。</li>
-</ul>
-<p><mark>通过HTTP可以实现RESTful API调用，为什么还要用RPC调用？</mark></p>
-<ul>
-<li>使用RPC的目的让程序调用远程方法像调用本地方法一样无差别。</li>
-<li>RESTful API通常基于HTTP协议，传输数据采用JSON等文本协议，相较于RPC直接使用TCP协议，多采用<mark>二进制协议，性能通常更高！</mark></li>
-</ul>
-<h2 id="go语言实现RPC"><a href="#go语言实现RPC" class="headerlink" title="go语言实现RPC"></a>go语言实现RPC</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// server.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">	<span class="string">&quot;net/rpc&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Args <span class="keyword">struct</span> &#123;</span><br><span class="line">	X, Y <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ServiceA 自定义一个结构体类型</span></span><br><span class="line"><span class="keyword">type</span> ServiceA <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Add 为ServiceA类型增加一个可导出的Add方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *ServiceA)</span></span> Add(args *Args, reply *<span class="type">int</span>) <span class="type">error</span> &#123;</span><br><span class="line">	*reply = args.X + args.Y</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	service := <span class="built_in">new</span>(ServiceA)</span><br><span class="line">	rpc.Register(service) <span class="comment">// 注册RPC服务</span></span><br><span class="line">	rpc.HandleHTTP()      <span class="comment">// 基于HTTP协议</span></span><br><span class="line">	l, e := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;:9091&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> e != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(<span class="string">&quot;listen error:&quot;</span>, e)</span><br><span class="line">	&#125;</span><br><span class="line">	http.Serve(l, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// client.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net/rpc&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Args <span class="keyword">struct</span> &#123;</span><br><span class="line">	X, Y <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 建立HTTP连接</span></span><br><span class="line">	client, err := rpc.DialHTTP(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;127.0.0.1:9091&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(<span class="string">&quot;dialing:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 同步调用</span></span><br><span class="line">	args := &amp;Args&#123;<span class="number">10</span>, <span class="number">20</span>&#125;</span><br><span class="line">	<span class="keyword">var</span> reply <span class="type">int</span></span><br><span class="line">	err = client.Call(<span class="string">&quot;ServiceA.Add&quot;</span>, args, &amp;reply)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(<span class="string">&quot;ServiceA.Add error:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;ServiceA.Add: %d+%d=%d\n&quot;</span>, args.X, args.Y, reply)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 异步调用</span></span><br><span class="line">	<span class="keyword">var</span> reply2 <span class="type">int</span></span><br><span class="line">	divCall := client.Go(<span class="string">&quot;ServiceA.Add&quot;</span>, args, &amp;reply2, <span class="literal">nil</span>)</span><br><span class="line">	replyCall := &lt;-divCall.Done <span class="comment">// 接收调用结果</span></span><br><span class="line">	fmt.Println(replyCall.Error)</span><br><span class="line">	fmt.Println(reply2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="RPC步骤"><a href="#RPC步骤" class="headerlink" title="RPC步骤"></a>RPC步骤</h2><p><img src="https://www.liwenzhou.com/images/Go/rpc/rpc04.png" alt="image.png"></p>
-<ol>
-<li>服务调用方（client）以本地调用方式调用服务；</li>
-<li>client stub接收到调用后负责将方法、参数等组装成能够进行网络传输的消息体；</li>
-<li>client stub找到服务地址，并将消息发送到服务端；</li>
-<li>server 端接收到消息；</li>
-<li>server stub收到消息后进行解码；</li>
-<li>server stub根据解码结果调用本地的服务；</li>
-<li>本地服务执行并将结果返回给server stub；</li>
-<li>server stub将返回结果打包成能够进行网络传输的消息体；</li>
-<li>按地址将消息发送至调用方；</li>
-<li>client 端接收到消息；</li>
-<li>client stub收到消息并进行解码；</li>
-<li>调用方得到最终结果。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2024/10/22/RPC%E5%8E%9F%E7%90%86/" data-id="cm2kaczgs00009kyj86x6aux2" data-title="RPC原理" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%A1%86%E6%9E%B6/" rel="tag">框架</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/10/22/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2024-10-22T10:08:15.726Z" itemprop="datePublished">2024-10-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2024/10/22/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2024/10/22/hello-world/" data-id="cm2kaczgx00019kyj0mejhmmj" data-title="Hello World" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
 </section>
