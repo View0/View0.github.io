@@ -13,8 +13,8 @@
   
   <title>
     
-      关于 
-      
+      标签 
+       : C++
       
       |
     
@@ -33,6 +33,10 @@
   <link rel="stylesheet" href="/css/main.css" />
   <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
   <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
   
 
   <!-- jquery3.3.1 -->
@@ -86,8 +90,8 @@
           <a href="/archives/">Archives</a>
         </li>
       
-        <li class="nav-item" data-path="/about/">
-          <a href="/about/">About</a>
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
         </li>
       
     </ul>
@@ -100,97 +104,48 @@
 
 
       <div class="flex-container">
-        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
-<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+        <!-- 标签详情页，展示某个标签下的文章列表，url形式：https://yoursite/tags/某个标签/ -->
 
-
-  <!-- LaTex Display -->
-
-  
-    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
-  
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
-      }
-    }
-  </script>
-
-
-
-
-
-  <!-- clipboard -->
-
-  
-    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
-  
-  
-<script src="/js/codeCopy.js"></script>
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
-  <div class="container post-details" id="post-details">
-    <div class="post-content">
-      <div class="post-title">about</div>
-      <div class="post-attach">
-        <span class="post-pubtime">
-          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-          2024-10-28 20:37:24
-        </span>
-        
-      </div>
-      <div class="markdown-body">
-        <p>pixel的学习小记</p>
-
-      </div>
-      
-        <div class="prev-or-next">
-          <div class="post-foot-next">
-            
-          </div>
-          <div class="post-attach">
-            <span class="post-pubtime">
-              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-              2024-10-28 20:37:24
-            </span>
-            
-          </div>
-          <div class="post-foot-prev">
-            
-          </div>
-        </div>
-      
-    </div>
-    
-
-    
-      <div class="comments-container">
-        
-
-
-
-
-
-
-
-      </div>
-    
+<div class="container tag-details">
+  <div class="content-title">
+    <h2>
+      <span>C++</span>
+    </h2>
   </div>
-
+  
+    <div class="post-list">
+      <div class="post-item" title="多线程">
+        <span class="time-m-d">2024-10-29</span>
+        <a href="/2024/10/29/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+          <span>多线程</span>
+        </a>
+      </div>
+    </div>
+  
+    <div class="post-list">
+      <div class="post-item" title="再谈单例模式">
+        <span class="time-m-d">2024-10-28</span>
+        <a href="/2024/10/28/%E5%86%8D%E8%B0%88%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
+          <span>再谈单例模式</span>
+        </a>
+      </div>
+    </div>
+  
+    <div class="post-list">
+      <div class="post-item" title="mingw">
+        <span class="time-m-d">2024-10-24</span>
+        <a href="/2024/10/24/mingw/">
+          <span>mingw</span>
+        </a>
+      </div>
+    </div>
+  
+  <nav class="post-navigation">
+    
+    <span class="page-num">1 / 1</span>
+    
+  </nav>
+</div>
 
         
 <div class="footer">
@@ -447,24 +402,6 @@
 
 
         
-  
-    <div class="share-icon tools-bar-item">
-      <a href="javascript: void(0)" id="share-icon">
-        <i class="iconfont iconshare"></i>
-      </a>
-      <div class="share-content hidden">
-        
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + about + '&url=' + http%3A%2F%2Fexample.com%2Fabout%2Findex.html + '" target="_blank" title="Twitter">
-            <i class="iconfont icon-twitter"></i>
-          </a>
-        
-        
-          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/about/index.html" target="_blank" title="Facebook">
-            <i class="iconfont icon-facebooksquare"></i>
-          </a>
-        
-      </div>
-    </div>
   
   
 <script src="/js/shares.js"></script>
