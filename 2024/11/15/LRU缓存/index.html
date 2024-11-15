@@ -13,7 +13,7 @@
   
   <title>
     
-      DyFADet 
+      LRU缓存 
       
       
       |
@@ -149,19 +149,19 @@
   <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
   <div class="container post-details" id="post-details">
     <div class="post-content">
-      <div class="post-title">DyFADet</div>
+      <div class="post-title">LRU缓存</div>
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-          2024-11-07 14:07:35
+          2024-11-15 14:37:11
         </span>
         
               <span class="post-tags">
                 <i class="iconfont icon-tags mr-10" title="标签"></i>
                 
                 <span class="span--tag mr-8">
-                  <a href="/tags/CV/" title="CV">
-                    #CV
+                  <a href="/tags/%E7%AE%97%E6%B3%95/" title="算法">
+                    #算法
                   </a>
                 </span>
                 
@@ -170,23 +170,23 @@
       </div>
       <div class="markdown-body">
         <blockquote>
-<p><mark>2024</mark><br>DyFADet: Dynamic Feature Aggregation for Temporal Action Detection — DyFADet：动态特征聚合用于时间动作检测</p>
+<p>FIFO：先进先出策略，<mark>实现简单，但很多场景下，部分记录虽然是最早添加但也最常被访问，这类数据会被频繁添加、淘汰，导致缓存命中率较低。</mark><br>LFU：淘汰最少使用，<mark>命中率较高，但维护每个记录的访问次数，对内存的消耗较高。</mark></p>
+</blockquote>
+<p>LRU作为缓存淘汰算法，相对于仅考虑时间因素的FIFO和仅考虑访问频率的LFU，LRU算法可以认为是相对平衡的一种淘汰算法。</p>
+<p>LRU算法的实现非常简单，维护一个队列，如果某条记录被访问了，则移动到队尾，那么队首是最近最少访问的数据，淘汰该条记录即可。</p>
+<p><img src="https://geektutu.com/post/geecache-day1/lru.jpg"></p>
 <ul>
-<li><mark>DyFADet目的：解决TAD模型中特征不鲜明和头部不适应的问题。</mark></li>
+<li>绿色的是字典，存储键和值的映射关系。这样根据某个键(key)查找对应的值(value)的复杂是<code>O(1)</code>，在字典中插入一条记录的复杂度也是<code>O(1)</code>。</li>
+<li>红色的是双向链表实现的队列。将所有的值放到双向链表中，这样，当访问到某个值时，将其移动到队尾的复杂度是<code>O(1)</code>，在队尾新增一条记录以及删除一条记录的复杂度均为<code>O(1)</code>。</li>
 </ul>
-</blockquote>
-<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>最近提出的基于神经网络的时序动作检测（TAD）模型本质上仅限于通过共享权重检测头从复杂场景中提取区分性表示，并以不同长度建模动作实例。受到动态神经网络成功的启发，作者构建了一个新颖的<mark>动态特征聚合（DFA）模块，该模块能够在不同时间戳同时适应核权重和感受野。</mark>基于DFA，所提出的动态编码器层聚合动作时间范围内的时间特征，并保证了提取表示的可区分性。此外，使用DFA有助于开发一个动态TAD头（DyHead），该头能够自适应地聚合具有调整参数和学习感受野的多尺度特征，更好地检测视频中范围多样化的动作实例。</p>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><blockquote>
-<p>TAD的目标是同时识别动作类别并定位未裁剪视频中的动作时间边界。目前方法大致可以分为两阶段方法（<mark>首先学习生成类无感知动作提议，然后在提议级别进行分类和边界细化</mark>）和一阶段方法（<mark>将每个帧分类，并以端到端的方式定位时间边界，实现更好的性能</mark>）。<br>从未修剪的视频中准确检测动作仍然是一项具有挑战性的任务。一方面，<mark>相邻帧中的空间冗余以及静态特征提取策略可能导致学习到的表示的区分能力差</mark>首，阻碍检测性能；另一方面，在<mark>首常见的TAD设计中可能会发生头部不适应问题</mark>，其中使用静态共享权重头部来检测具有不同时间长度的动作实例，导致性能不佳。<br>作者受到动态神经网络近期成功的启发，我们开发了一种新颖的动态特征聚合（DFA）模块用于TAD。其学习机制能够实现动态特征聚合过程，它具有提高学习表示的区分能力，并且根据检测头在特征金字塔的每一层上调整特征学习过程。<br>基于DFA，作者构建了一个动态编码器DynE和一个动态头DyHead，以解决现代TAD模型中的两个问题。<mark>一方面，DynE的动态特征学习可以促进目标动作的特征聚集在一起，并增加动作特征与边界之间的差异；另一方面，当DyHead应用于不同的金字塔层级时，它会动态调整检测器参数，这对应于检测具有不同时间范围的动作。</mark></p>
-</blockquote>
-<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>作者利用新颖的DFA模块，该模块同时调整其核权重和感受野，<mark>以解决TAD模型中特征不鲜明和头部不适应的问题。</mark>基于DFA的DyFADet在一系列TAD基准测试中取得了高性能，这表明应该考虑基于输入的细粒度特征提取机制来构建高性能的TAD模型。</p>
-
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/lru-cache/description/">Leetcode - LRU缓存</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">DLinkedNode</span> &#123;</span><br><span class="line">    <span class="type">int</span> key, value;</span><br><span class="line">    DLinkedNode* prev;</span><br><span class="line">    DLinkedNode* next;</span><br><span class="line">    <span class="built_in">DLinkedNode</span>() : <span class="built_in">key</span>(<span class="number">0</span>), <span class="built_in">value</span>(<span class="number">0</span>), <span class="built_in">prev</span>(<span class="literal">nullptr</span>), <span class="built_in">next</span>(<span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line">    <span class="built_in">DLinkedNode</span>(<span class="type">int</span> _key, <span class="type">int</span> _value)</span><br><span class="line">        : <span class="built_in">key</span>(_key), <span class="built_in">value</span>(_value), <span class="built_in">prev</span>(<span class="literal">nullptr</span>), <span class="built_in">next</span>(<span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LRUCache</span> &#123;</span><br><span class="line">    unordered_map&lt;<span class="type">int</span>, DLinkedNode*&gt; cache;</span><br><span class="line">    DLinkedNode* head;</span><br><span class="line">    DLinkedNode* tail;</span><br><span class="line">    <span class="type">int</span> size;</span><br><span class="line">    <span class="type">int</span> capacity;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">LRUCache</span>(<span class="type">int</span> _capacity): <span class="built_in">capacity</span>(_capacity), <span class="built_in">size</span>(<span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 使用伪头部和伪尾部节点</span></span><br><span class="line">        head = <span class="keyword">new</span> <span class="built_in">DLinkedNode</span>();</span><br><span class="line">        tail = <span class="keyword">new</span> <span class="built_in">DLinkedNode</span>();</span><br><span class="line">        head-&gt;next = tail;</span><br><span class="line">        tail-&gt;prev = head;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">get</span><span class="params">(<span class="type">int</span> key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!cache.<span class="built_in">count</span>(key)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果key存在，先通过哈希定位，再移到头部</span></span><br><span class="line">        DLinkedNode* node = cache[key];</span><br><span class="line">        <span class="built_in">moveToHead</span>(node);</span><br><span class="line">        <span class="keyword">return</span> node-&gt;value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">put</span><span class="params">(<span class="type">int</span> key, <span class="type">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!cache.<span class="built_in">count</span>(key)) &#123;</span><br><span class="line">            <span class="comment">// 如果key不存在，创建一个新的节点</span></span><br><span class="line">            DLinkedNode* node = <span class="keyword">new</span> <span class="built_in">DLinkedNode</span>(key, value);</span><br><span class="line">            <span class="comment">// 添加进哈希表</span></span><br><span class="line">            cache[key] = node;</span><br><span class="line">            <span class="comment">// 添加至双向链表的头部</span></span><br><span class="line">            <span class="built_in">addToHead</span>(node);</span><br><span class="line">            ++size;</span><br><span class="line">            <span class="keyword">if</span> (size &gt; capacity) &#123;</span><br><span class="line">                <span class="comment">// 如果超出容量，则移除双向链表的尾部节点</span></span><br><span class="line">                DLinkedNode* removed = <span class="built_in">removeTail</span>();</span><br><span class="line">                <span class="comment">// 删除哈希表中对应的项</span></span><br><span class="line">                cache.<span class="built_in">erase</span>(removed-&gt;key);</span><br><span class="line">                <span class="comment">// 防止内存泄漏</span></span><br><span class="line">                <span class="keyword">delete</span> removed;</span><br><span class="line">                --size;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 如果key存在，先通过哈希表定位，再修改value，并移到头部</span></span><br><span class="line">            DLinkedNode* node = cache[key];</span><br><span class="line">            node-&gt;value = value;</span><br><span class="line">            <span class="built_in">moveToHead</span>(node);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addToHead</span><span class="params">(DLinkedNode* node)</span> </span>&#123;</span><br><span class="line">        node-&gt;prev = head;</span><br><span class="line">        node-&gt;next = head-&gt;next;</span><br><span class="line">        head-&gt;next-&gt;prev = node;</span><br><span class="line">        head-&gt;next = node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">removeNode</span><span class="params">(DLinkedNode* node)</span> </span>&#123;</span><br><span class="line">        node-&gt;prev-&gt;next = node-&gt;next;</span><br><span class="line">        node-&gt;next-&gt;prev = node-&gt;prev;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">moveToHead</span><span class="params">(DLinkedNode* node)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">removeNode</span>(node);</span><br><span class="line">        <span class="built_in">addToHead</span>(node);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">DLinkedNode* <span class="title">removeTail</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DLinkedNode* node = tail-&gt;prev;</span><br><span class="line">        <span class="built_in">removeNode</span>(node);</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
       </div>
       
         <div class="prev-or-next">
           <div class="post-foot-next">
             
-              <a href="/2024/11/06/TriDet/" target="_self">
+              <a href="/2024/11/07/DyFADet/" target="_self">
                 <i class="iconfont icon-chevronleft"></i>
                 <span>上一页</span>
               </a>
@@ -195,15 +195,15 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
-              2024-11-07 14:07:35
+              2024-11-15 14:37:11
             </span>
             
                   <span class="post-tags">
                     <i class="iconfont icon-tags mr-10" title="标签"></i>
                     
                     <span class="span--tag mr-8">
-                      <a href="/tags/CV/" title="CV">
-                        #CV
+                      <a href="/tags/%E7%AE%97%E6%B3%95/" title="算法">
+                        #算法
                       </a>
                     </span>
                     
@@ -212,33 +212,11 @@
           </div>
           <div class="post-foot-prev">
             
-              <a href="/2024/11/15/LRU%E7%BC%93%E5%AD%98/" target="_self">
-                <span>下一页</span>
-                <i class="iconfont icon-chevronright"></i>
-              </a>
-            
           </div>
         </div>
       
     </div>
     
-  <div id="btn-catalog" class="btn-catalog">
-    <i class="iconfont icon-catalog"></i>
-  </div>
-  <div class="post-catalog hidden" id="catalog">
-    <div class="title">目录</div>
-    <div class="catalog-content">
-      
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-text">摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-text">结论</span></a></li></ol>
-      
-    </div>
-  </div>
-
-  
-<script src="/js/catalog.js"></script>
-
-
-
 
     
   </div>
@@ -506,12 +484,12 @@
       </a>
       <div class="share-content hidden">
         
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + DyFADet + '&url=' + http%3A%2F%2Fexample.com%2F2024%2F11%2F07%2FDyFADet%2F + '" target="_blank" title="Twitter">
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + LRU%E7%BC%93%E5%AD%98 + '&url=' + http%3A%2F%2Fexample.com%2F2024%2F11%2F15%2FLRU%25E7%25BC%2593%25E5%25AD%2598%2F + '" target="_blank" title="Twitter">
             <i class="iconfont icon-twitter"></i>
           </a>
         
         
-          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2024/11/07/DyFADet/" target="_blank" title="Facebook">
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2024/11/15/LRU%E7%BC%93%E5%AD%98/" target="_blank" title="Facebook">
             <i class="iconfont icon-facebooksquare"></i>
           </a>
         
