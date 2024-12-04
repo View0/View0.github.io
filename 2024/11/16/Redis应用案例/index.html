@@ -13,8 +13,8 @@
   
   <title>
     
-      标签 
-       : 算法
+      Redis应用案例 
+      
       
       |
     
@@ -104,57 +104,150 @@
 
 
       <div class="flex-container">
-        <!-- 标签详情页，展示某个标签下的文章列表，url形式：https://yoursite/tags/某个标签/ -->
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
 
-<div class="container tag-details">
-  <div class="content-title">
-    <h2>
-      <span>算法</span>
-    </h2>
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Redis应用案例</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2024-11-16 13:44:34
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+                    #数据库
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <blockquote>
+<p><strong>为什么需要Redis</strong> → 数据分冷热（热数据：经常被访问到的数据），将热数据存储到内存中，可以提高访问效率！</p>
+</blockquote>
+<p><img src="/../db_res/img1.png" alt="image.png"></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://gitee.com/wedone/redis_course/tree/master">学习源码</a></li>
+</ul>
+<h2 id="连续签到"><a href="#连续签到" class="headerlink" title="连续签到"></a>连续签到</h2><p>每日连续签到：用户每日有一次签到的机会，如果断签，连续签到计数将归0。</p>
+<ul>
+<li><strong>实现思想</strong>：以用户id作为Key值，value是连续签到日期数，结合<strong>Redis的过期机制</strong>来重置断签value。（<mark>数据结构：String</mark>）</li>
+</ul>
+<h2 id="消息通知"><a href="#消息通知" class="headerlink" title="消息通知"></a>消息通知</h2><p><strong>消息通知</strong>：例如当文章更新时，将更新后的文章推送到ES，用户就能搜索到最新的文章数据。（<mark>数据结构：List的双向链表</mark>）</p>
+<h2 id="计数"><a href="#计数" class="headerlink" title="计数"></a>计数</h2><p>一个用户通常有多项计数需求（点赞数、关注数、文章数等），可通过hash结构存储。</p>
+<h2 id="排行版"><a href="#排行版" class="headerlink" title="排行版"></a>排行版</h2><p>场景：例如积分变化时，排名要实时更新。</p>
+<h2 id="限流"><a href="#限流" class="headerlink" title="限流"></a>限流</h2><p>场景：例如要求1秒内放行的请求为N，超过N则禁止访问。</p>
+<h2 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h2><p>并发场景，要求一次只能有一个协程执行。执行完成后，其它等待中的协程才能执行。（（<mark>利用redis的setnx实现</mark>））</p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2024/11/15/LRU%E7%BC%93%E5%AD%98/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2024-11-16 13:44:34
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+                        #数据库
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2024/11/20/codetop/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
   </div>
-  
-    <div class="post-list">
-      <div class="post-item" title="代码随想录笔记">
-        <span class="time-m-d">2024-12-04</span>
-        <a href="/2024/12/04/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E7%AC%94%E8%AE%B0/">
-          <span>代码随想录笔记</span>
-        </a>
-      </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E7%BB%AD%E7%AD%BE%E5%88%B0"><span class="toc-text">连续签到</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E9%80%9A%E7%9F%A5"><span class="toc-text">消息通知</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E6%95%B0"><span class="toc-text">计数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E8%A1%8C%E7%89%88"><span class="toc-text">排行版</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E6%B5%81"><span class="toc-text">限流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-text">分布式锁</span></a></li></ol>
+      
     </div>
+  </div>
+
   
-    <div class="post-list">
-      <div class="post-item" title="codetop">
-        <span class="time-m-d">2024-11-20</span>
-        <a href="/2024/11/20/codetop/">
-          <span>codetop</span>
-        </a>
-      </div>
-    </div>
-  
-    <div class="post-list">
-      <div class="post-item" title="LRU缓存">
-        <span class="time-m-d">2024-11-15</span>
-        <a href="/2024/11/15/LRU%E7%BC%93%E5%AD%98/">
-          <span>LRU缓存</span>
-        </a>
-      </div>
-    </div>
-  
-    <div class="post-list">
-      <div class="post-item" title="BinaryTree">
-        <span class="time-m-d">2024-11-06</span>
-        <a href="/2024/11/06/BinaryTree/">
-          <span>BinaryTree</span>
-        </a>
-      </div>
-    </div>
-  
-  <nav class="post-navigation">
+<script src="/js/catalog.js"></script>
+
+
+
+
     
-    <span class="page-num">1 / 1</span>
-    
-  </nav>
-</div>
+  </div>
+
 
         
 <div class="footer">
@@ -411,6 +504,24 @@
 
 
         
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + Redis%E5%BA%94%E7%94%A8%E6%A1%88%E4%BE%8B + '&url=' + http%3A%2F%2Fexample.com%2F2024%2F11%2F16%2FRedis%25E5%25BA%2594%25E7%2594%25A8%25E6%25A1%2588%25E4%25BE%258B%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2024/11/16/Redis%E5%BA%94%E7%94%A8%E6%A1%88%E4%BE%8B/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
   
   
 <script src="/js/shares.js"></script>
