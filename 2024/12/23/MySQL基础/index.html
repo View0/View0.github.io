@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="John Doe" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
+    
+      MySQL 基础 
+      
+      
+      |
+    
+     Hexo Blogs
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.jpg" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Pixel</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">MySQL 基础</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+          2025-06-28 10:03:11
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+                    #数据库
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="Linux系统安装MySQL（以Ubuntu为例）"><a href="#Linux系统安装MySQL（以Ubuntu为例）" class="headerlink" title="Linux系统安装MySQL（以Ubuntu为例）"></a>Linux系统安装MySQL（以Ubuntu为例）</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 更新apt</span><br><span class="line">apt <span class="keyword">update</span></span><br><span class="line"># 安装mysql</span><br><span class="line">sudo apt install <span class="operator">-</span>y mysql<span class="operator">-</span>server</span><br><span class="line"># 一般安装结束自动启动mysql服务，可以使用如下命令查看服务的状态 → active表示服务已启动</span><br><span class="line">systemctl status mysql</span><br><span class="line"># 若未启动，执行以下命令启动</span><br><span class="line">systemctl <span class="keyword">start</span> mysql</span><br><span class="line"># 若是docker的ubuntu镜像，以上两条命令替换为 → service mysql status 和 service mysql <span class="keyword">start</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Docker安装MySQL镜像"><a href="#Docker安装MySQL镜像" class="headerlink" title="Docker安装MySQL镜像"></a>Docker安装MySQL镜像</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 拉取mysql镜像</span><br><span class="line">sudo docker pull mysql:<span class="number">8.0</span><span class="number">.26</span></span><br><span class="line"># 启动mysql容器</span><br><span class="line"># <span class="operator">-</span>p <span class="number">3306</span>:<span class="number">3306</span>：映射容器服务的<span class="number">3306</span>端口到宿主机的<span class="number">3306</span>端口，外部主机可以直接通过宿主机ip:<span class="number">3306</span>访问到MySQL的服务</span><br><span class="line"># MYSQL_ROOT_PASSWORD<span class="operator">=</span><span class="number">123456</span>：设置 MySQL 服务 root 用户的密码</span><br><span class="line">docker run <span class="comment">--name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0.26</span></span><br><span class="line"># 进入容器后访问MySQL命令 → 输入密码<span class="number">123456</span></span><br><span class="line">mysql <span class="operator">-</span>h localhost <span class="operator">-</span>u root <span class="operator">-</span>p</span><br><span class="line"># navicat连接Docker的mysql镜像容器 → [参考](https:<span class="operator">/</span><span class="operator">/</span>blog.csdn.net<span class="operator">/</span>qq_28041113<span class="operator">/</span>article<span class="operator">/</span>details<span class="operator">/</span><span class="number">120762737</span>?spm<span class="operator">=</span><span class="number">1001.2014</span><span class="number">.3001</span><span class="number">.5506</span>)</span><br><span class="line"># 连接本地Docker镜像下的mysql时，主机填localhost即可，若是服务器中的mysql，需填ip</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据库基本操作"><a href="#数据库基本操作" class="headerlink" title="数据库基本操作"></a>数据库基本操作</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"># 创建<span class="operator">/</span>删除<span class="operator">/</span>选择<span class="operator">/</span>显示数据库 → 以game为例</span><br><span class="line"><span class="keyword">create</span> database game;</span><br><span class="line"><span class="keyword">drop</span> database game;</span><br><span class="line">use game;</span><br><span class="line"><span class="keyword">show</span> databases;</span><br><span class="line"></span><br><span class="line"># 创建<span class="operator">/</span>删除<span class="operator">/</span>查看数据表 → 以player为例</span><br><span class="line"><span class="keyword">create table</span> player(</span><br><span class="line">    id <span class="type">INT</span>,</span><br><span class="line">    name <span class="type">VARCHAR</span>(<span class="number">100</span>),</span><br><span class="line">    level <span class="type">INT</span>,</span><br><span class="line">    exp <span class="type">INT</span>,</span><br><span class="line">    gold <span class="type">DECIMAL</span>(<span class="number">10</span>, <span class="number">2</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">desc</span> player;</span><br><span class="line"></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> player;</span><br><span class="line"></span><br><span class="line"># 修改<span class="operator">/</span>添加<span class="operator">/</span>删除表的结构 </span><br><span class="line"><span class="keyword">alter table</span> player modify <span class="keyword">column</span> name <span class="type">VARCHAR</span>(<span class="number">200</span>);</span><br><span class="line"><span class="keyword">alter table</span> player <span class="keyword">add</span> <span class="keyword">column</span> last_login DATETIME;</span><br><span class="line"><span class="keyword">alter table</span> player <span class="keyword">drop</span> <span class="keyword">column</span> last_login;</span><br><span class="line"></span><br><span class="line"># 向表中添加数据 <span class="operator">&amp;</span> 查询<span class="operator">/</span>删除表中的数据</span><br><span class="line"><span class="keyword">insert into</span> player (id, name, level, exp, gold) <span class="keyword">values</span> (<span class="number">1</span>, &quot;a&quot;, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player;</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> player <span class="keyword">where</span> gold <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"># 导出<span class="operator">/</span>导入数据库示例</span><br><span class="line">mysqldump <span class="operator">-</span>u root <span class="operator">-</span>p demo <span class="operator">&gt;</span> demo.sql;</span><br><span class="line">mysql <span class="operator">-</span>u root <span class="operator">-</span>p demo <span class="operator">&lt;</span> demo.sql;</span><br><span class="line"></span><br><span class="line"># 常用语句</span><br><span class="line"><span class="comment">-- where限制查询条件实例</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player <span class="keyword">where</span> gold <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player <span class="keyword">where</span> level <span class="operator">&gt;</span> <span class="number">1</span> <span class="keyword">and</span> level <span class="operator">&lt;</span> <span class="number">10</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player <span class="keyword">where</span> level <span class="keyword">in</span> (<span class="number">1</span>, <span class="number">3</span>);</span><br><span class="line"><span class="comment">-- 查找名字中第一个字是王，后面任意多字符的玩家</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player <span class="keyword">where</span> name <span class="keyword">LIKE</span> <span class="string">&#x27;王%&#x27;</span>;</span><br><span class="line"><span class="comment">-- 查找名字中包含王字的玩家</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player <span class="keyword">where</span> name <span class="keyword">LIKE</span> <span class="string">&#x27;%王%&#x27;</span>;</span><br><span class="line"><span class="comment">-- 查找姓王，后面一个字的玩家</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player <span class="keyword">where</span> name <span class="keyword">LIKE</span> <span class="string">&#x27;王_&#x27;</span>;</span><br><span class="line"><span class="comment">-- 查找邮箱为null值玩家</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player <span class="keyword">where</span> email i <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 子查询</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player <span class="keyword">where</span> level <span class="operator">&gt;</span> (<span class="keyword">select</span> <span class="built_in">AVG</span>(level) <span class="keyword">from</span> player);</span><br><span class="line"><span class="comment">-- 利用查询创建添加一定限制的新表</span></span><br><span class="line"><span class="keyword">create table</span> player_cons <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> player <span class="keyword">where</span> level <span class="operator">&lt;</span> <span class="number">4</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="C-连接MySQL常用API"><a href="#C-连接MySQL常用API" class="headerlink" title="C++连接MySQL常用API"></a>C++连接MySQL常用API</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mysql.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 连接准备 → 前提是MySQL处于运行状态</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *db_host = <span class="string">&quot;localhost&quot;</span>; <span class="comment">// 主机 or ip</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *db_user = <span class="string">&quot;root&quot;</span>;      <span class="comment">// user</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *db_pass = <span class="string">&quot;root&quot;</span>;      <span class="comment">// password</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *db_name = <span class="string">&quot;game&quot;</span>;      <span class="comment">// connect name of database</span></span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> db_port = <span class="number">3306</span>;          <span class="comment">// port</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1.初始化连接环境</span></span><br><span class="line">    MYSQL *mysql = <span class="built_in">mysql_init</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    <span class="keyword">if</span> (mysql == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;mysql_init() failed...\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 2.连接数据库服务器</span></span><br><span class="line">    mysql = <span class="built_in">mysql_real_connect</span>(mysql, db_host, db_user, db_pass, db_name, db_port, <span class="literal">nullptr</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (mysql == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;mysql_real_connect() failed...\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;connect mysql succeed!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3.执行sql语句 → 以查询数据库game中的player为例</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *sql = <span class="string">&quot;select * from player&quot;</span>; <span class="comment">// sql语句</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">mysql_query</span>(mysql, sql) != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;mysql_query() failed, result: %s\n&quot;</span>, <span class="built_in">mysql_error</span>(mysql));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4.获取查询到的数据信息</span></span><br><span class="line">    MYSQL_RES *res = <span class="built_in">mysql_store_result</span>(mysql);</span><br><span class="line">    <span class="keyword">if</span>(res == <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;mysql_store_result() failed, result: %s\n&quot;</span>, <span class="built_in">mysql_error</span>(mysql));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 5.打印查询到的数据信息</span></span><br><span class="line">    <span class="type">int</span> col = <span class="built_in">mysql_num_fields</span>(res); <span class="comment">// 数据结果的列数</span></span><br><span class="line">    MYSQL_FIELD *fields = <span class="built_in">mysql_fetch_fields</span>(res); <span class="comment">// 数据结果的列名</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; col; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\t\t&quot;</span>, fields[i].name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="comment">// 遍历数据结果中的所有行</span></span><br><span class="line">    MYSQL_ROW row;</span><br><span class="line">    <span class="keyword">while</span> ((row = <span class="built_in">mysql_fetch_row</span>(res)) != <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; col; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%s\t\t&quot;</span>, row[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6.释放资源</span></span><br><span class="line">    <span class="built_in">mysql_free_result</span>(res);</span><br><span class="line">    <span class="built_in">mysql_close</span>(mysql);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2024/12/04/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E7%AC%94%E8%AE%B0/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+              2025-06-28 10:03:11
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+                        #数据库
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2025/02/19/STL/" target="_self">
+                <span>Next</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85MySQL%EF%BC%88%E4%BB%A5Ubuntu%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-text">Linux系统安装MySQL（以Ubuntu为例）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker%E5%AE%89%E8%A3%85MySQL%E9%95%9C%E5%83%8F"><span class="toc-text">Docker安装MySQL镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="toc-text">数据库基本操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E8%BF%9E%E6%8E%A5MySQL%E5%B8%B8%E7%94%A8API"><span class="toc-text">C++连接MySQL常用API</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2025 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+    <div class="footer-views">
+      
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+      
+          本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        
+      
+          本站访客数<span id="busuanzi_value_site_uv"></span>人
+        
+      
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + MySQL%20%E5%9F%BA%E7%A1%80 + '&url=' + http%3A%2F%2Fexample.com%2F2024%2F12%2F23%2FMySQL%25E5%259F%25BA%25E7%25A1%2580%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2024/12/23/MySQL%E5%9F%BA%E7%A1%80/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>

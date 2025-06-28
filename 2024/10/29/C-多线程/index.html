@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="John Doe" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
+    
+      C++ 多线程 
+      
+      
+      |
+    
+     Hexo Blogs
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.jpg" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Pixel</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">C++ 多线程</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+          2025-06-28 11:01:01
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/C/" title="C++">
+                    #C++
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h2 id="C-11多线程"><a href="#C-11多线程" class="headerlink" title="C++11多线程"></a>C++11多线程</h2><ul>
+<li>“语言级别”→ <mark>跨平台</mark> - windows&#x2F;linux&#x2F;max</li>
+<li>“语言层面”→ thread -&gt; windows - createThread; linux - pthread_create（实质调用的仍是各系统的接口）</li>
+</ul>
+<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><ol>
+<li>如何创建启动一个线程 -&gt; 传入线程所需的线程函数和参数，线程自动开启std::thread t(threadFunction);</li>
+<li>子线程如何结束 -&gt; 子线程函数在执行完成，线程就结束了</li>
+<li>主线程如何处理子线程 -&gt; <mark>(1)t.join()：等待t线程结束，当前线程继续往下运行；(2)t.detach()：将t线程设置为分离线程，主线程结束，整个线程结束，所有的子线程都自动结束。</mark></li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">download</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 模拟下载, 总共耗时500ms，阻塞线程500ms</span></span><br><span class="line">    this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">500</span>));</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;child thread: &quot;</span> &lt;&lt; this_thread::<span class="built_in">get_id</span>() &lt;&lt; <span class="string">&quot;, download success....&quot;</span> &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">int</span> num, string str)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;child thread: &quot;</span> &lt;&lt; this_thread::get_id &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;num: &quot;</span> &lt;&lt; num &lt;&lt; <span class="string">&quot;, str: &quot;</span> &lt;&lt; str &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 打印主线程ID</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;main thread ID: &quot;</span> &lt;&lt; this_thread::<span class="built_in">get_id</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建子线程</span></span><br><span class="line">    <span class="function">thread <span class="title">t</span><span class="params">(download)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// join() -&gt; 阻塞函数：若download()未完成，则主线程阻塞至任务执行完毕；若download()完成，则继续执行</span></span><br><span class="line">    t.<span class="built_in">join</span>(); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 若程序要求固定顺序，则可用join()函数来控制 → 例如download()完成后再创建一个子线程</span></span><br><span class="line">    <span class="function">thread <span class="title">t1</span><span class="params">(func, <span class="number">13</span>, <span class="string">&quot;lucky number&quot;</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// detach() -&gt; 线程分离函数</span></span><br><span class="line">    t<span class="number">1.</span><span class="built_in">detach</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 让主线程休眠, 等待子线程执行完毕 -&gt; 防止线程分离后，func()未完成，主线程就退出并销毁子线程</span></span><br><span class="line">    this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">seconds</span>(<span class="number">5</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取当前计算机的CPU核心数</span></span><br><span class="line">    <span class="type">int</span> num = thread::<span class="built_in">hardware_concurrency</span>();</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;CPU number: &quot;</span> &lt;&lt; num &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="临界区互斥锁"><a href="#临界区互斥锁" class="headerlink" title="临界区互斥锁"></a>临界区互斥锁</h3><ul>
+<li><mark>多线程程序执行的结果是一致的，不会随着CPU对线程的不同调用顺序而产生不同的运行结果</mark></li>
+<li>若多线程程序会产生不同的运行结果，则称为竞态条件</li>
+</ul>
+<ol>
+<li>当多个线程均涉及到<mark>临界区资源的修改</mark>时，可用mutex对临界区资源进行<mark>加锁解锁</mark>，以保证程序正常执行！</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;list&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// C++ thread 模拟车站三个窗口卖票的程序</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> ticketCount = <span class="number">100</span>; <span class="comment">// 车站有100张车票，由三个窗口一起卖票</span></span><br><span class="line">std::mutex mtx; <span class="comment">// 全局互斥锁 -&gt; 保证不会出现竞态条件</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟卖票的线程函数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sellTicket</span><span class="params">(<span class="type">int</span> index)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (ticketCount &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        mtx.<span class="built_in">lock</span>(); <span class="comment">// 上锁</span></span><br><span class="line">        <span class="keyword">if</span> (ticketCount &gt; <span class="number">0</span>) <span class="comment">// 锁 + 双重判断 -&gt; 防止三个线程在ticketCount为1时都再卖一次票</span></span><br><span class="line">        &#123; </span><br><span class="line">            <span class="comment">// 临界区代码段 -&gt; 原子操作 -&gt; 线程间互斥操作</span></span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;窗口：&quot;</span> &lt;&lt; index &lt;&lt; <span class="string">&quot;卖出第：&quot;</span> &lt;&lt; ticketCount &lt;&lt; <span class="string">&quot;张票&quot;</span> &lt;&lt; endl;</span><br><span class="line">            ticketCount--;</span><br><span class="line">        &#125;</span><br><span class="line">        mtx.<span class="built_in">unlock</span>(); <span class="comment">// 解锁</span></span><br><span class="line">        std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">100</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    list&lt;std::thread&gt; tlist;</span><br><span class="line">    <span class="comment">// 创建线程 -&gt; 模拟车站卖票</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        tlist.<span class="built_in">push_back</span>(std::<span class="built_in">thread</span>(sellTicket, i));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (std::thread&amp; t : tlist)</span><br><span class="line">    &#123;</span><br><span class="line">        t.<span class="built_in">join</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;所有窗口卖票结束...&quot;</span> &lt;&lt; endl;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>一般加锁，若程序在临界区中return，则可能无法解锁，造成死锁的问题。lock_guard是在作用域中加锁，而出作用域会自动解锁，若临界区中return相当于出了作用域，故会自动解锁，不会因return造成死锁问题！</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模拟卖票的线程函数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sellTicket</span><span class="params">(<span class="type">int</span> index)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (ticketCount &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="function">lock_guard&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(mtx)</span></span>; <span class="comment">// 构造时获取锁，出作用域&#123;&#125;析构锁（解锁）</span></span><br><span class="line">            <span class="keyword">if</span> (ticketCount &gt; <span class="number">0</span>) <span class="comment">// 锁 + 双重判断 -&gt; 防止三个线程在ticketCount为1时都再卖一次票</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 临界区代码段 -&gt; 原子操作 -&gt; 线程间互斥操作</span></span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;窗口：&quot;</span> &lt;&lt; index &lt;&lt; <span class="string">&quot;卖出第：&quot;</span> &lt;&lt; ticketCount &lt;&lt; <span class="string">&quot;张票&quot;</span> &lt;&lt; endl;</span><br><span class="line">                ticketCount--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">100</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>lock_guard定义处会调用构造函数加锁，离开定义域的话lock_guard会被销毁，调用析构函数解锁 → <mark>若作用域较大，则锁的颗粒度较大，很大程度上影响效率。通信中常用unique_lock！</mark></li>
+</ol>
+<ul>
+<li>一般加锁、解锁不涉及return时，可以考虑使用mutex！</li>
+<li>lock_guard不可能用在函数参数传递或返回过程中，只能用于简单代码段的互斥操作中！</li>
+<li>unique_lock不仅可以用于简单代码段的互斥操作，亦可用在函数的调用过程中！</li>
+</ul>
+<h3 id="同步通信"><a href="#同步通信" class="headerlink" title="同步通信"></a>同步通信</h3><p>多线程编有两个问题：</p>
+<ol>
+<li>线程间的互斥（<mark>竞态条件 -&gt; 临界区代码段“加锁”</mark>）</li>
+<li>线程间的同步通信 -&gt; <mark>生产者、消费者模型</mark></li>
+</ol>
+<p>若生产者还未生产“产品”，消费者无法消费 -&gt; 故需进行<mark>线程同步（“线程间通话”）</mark></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;condition_variable&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span> <span class="comment">// 包含 chrono 以支持 sleep_for</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line">mutex mtx; <span class="comment">// 互斥锁</span></span><br><span class="line">condition_variable cv; <span class="comment">// 条件变量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Queue</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Queue</span>() : <span class="built_in">max_size</span>(<span class="number">5</span>) &#123;&#125; <span class="comment">// 假设队列的最大容量为 5</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">put</span><span class="params">(<span class="type">int</span> val)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="function">unique_lock&lt;mutex&gt; <span class="title">lck</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        <span class="comment">// 队列未满时生产者生产 -&gt; 否则等待</span></span><br><span class="line">        <span class="keyword">while</span> (que.<span class="built_in">size</span>() &gt;= max_size)</span><br><span class="line">        &#123;</span><br><span class="line">            cv.<span class="built_in">wait</span>(lck);</span><br><span class="line">        &#125;</span><br><span class="line">        que.<span class="built_in">push</span>(val);</span><br><span class="line"></span><br><span class="line">        cv.<span class="built_in">notify_all</span>(); <span class="comment">// 生产完通知其它线程</span></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;生产者生产了：&quot;</span> &lt;&lt; val &lt;&lt; <span class="string">&quot; 号物品&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">get</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="function">unique_lock&lt;mutex&gt; <span class="title">lck</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        <span class="comment">// 队列非空时消费者消费 -&gt; 否则等待</span></span><br><span class="line">        <span class="keyword">while</span> (que.<span class="built_in">empty</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            cv.<span class="built_in">wait</span>(lck);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> val = que.<span class="built_in">front</span>();</span><br><span class="line">        que.<span class="built_in">pop</span>();</span><br><span class="line"></span><br><span class="line">        cv.<span class="built_in">notify_all</span>(); <span class="comment">// 消费完通知其它线程</span></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;消费者消费了：&quot;</span> &lt;&lt; val &lt;&lt; <span class="string">&quot; 号物品&quot;</span> &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt; que;</span><br><span class="line">    <span class="type">int</span> max_size; <span class="comment">// 队列的最大容量</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">producer</span><span class="params">(Queue* que)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">10</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        que-&gt;<span class="built_in">put</span>(i);</span><br><span class="line">        this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">100</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">consumer</span><span class="params">(Queue* que)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">10</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        que-&gt;<span class="built_in">get</span>();</span><br><span class="line">        this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">100</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Queue que; <span class="comment">// 线程共享的队列</span></span><br><span class="line"></span><br><span class="line">    <span class="function">thread <span class="title">t1</span><span class="params">(producer, &amp;que)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">t2</span><span class="params">(consumer, &amp;que)</span></span>;</span><br><span class="line"></span><br><span class="line">    t<span class="number">1.</span><span class="built_in">join</span>();</span><br><span class="line">    t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>cv.notify_all() -&gt; 通知其它在cv上等待的线程</li>
+<li>其它在cv上等待的线程一旦收到通知：等待状态 -&gt; 阻塞状态 -&gt; 获取互斥锁 -&gt; 继续执行程序！</li>
+</ul>
+<h3 id="无锁队列CAS"><a href="#无锁队列CAS" class="headerlink" title="无锁队列CAS"></a>无锁队列CAS</h3><ul>
+<li>若临界区代码段较大，用互斥锁可能会比较“重”，不利于效率提升</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;atomic&gt;</span> <span class="comment">// 包含原子类型</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;list&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// volative -&gt; 防止多线程对共享变量进行缓存 -&gt; 访问的都是原始内存的变量</span></span><br><span class="line"><span class="keyword">volatile</span> std::atomic_bool isReady = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">volatile</span> std::atomic_int m_count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">task</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!isReady)</span><br><span class="line">    &#123;</span><br><span class="line">        std::this_thread::<span class="built_in">yield</span>(); <span class="comment">// 线程让出当前时间片，等待下一次调度</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        m_count++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    list &lt;std::thread&gt; tlist;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        tlist.<span class="built_in">push_back</span>(std::<span class="built_in">thread</span>(task));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">seconds</span>(<span class="number">3</span>));</span><br><span class="line">    isReady = <span class="literal">true</span>; <span class="comment">// 等待子线程“工作”完后，置true，防止子线程一直调度</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (std::thread&amp; t : tlist)</span><br><span class="line">    &#123;</span><br><span class="line">        t.<span class="built_in">join</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;m_count:&quot;</span> &lt;&lt; m_count &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>多线程缓存可以加快线程运行的效率</li>
+<li>volatile -&gt; 无需多线程缓存共享变量 -&gt; 某线程修改共享变量后及时反应！</li>
+</ul>
+<h2 id="Linux多线程"><a href="#Linux多线程" class="headerlink" title="Linux多线程"></a>Linux多线程</h2><p>线程是轻量级的进程（LWP：light weight process），在Linux环境下线程的本质仍是进程。可理解为：进程是资源分配的最小单位，线程是操作系统调度执行的最小单位。</p>
+<h3 id="基本函数"><a href="#基本函数" class="headerlink" title="基本函数"></a>基本函数</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回线程ID的函数</span></span><br><span class="line"><span class="function"><span class="type">pthread_t</span> <span class="title">pthread_self</span><span class="params">(<span class="type">void</span>)</span></span>; <span class="comment">// ID类型为pthread_t -&gt; 无符号长整型数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    线程创建函数 -&gt; 一旦调用，即可获得一个子线程</span></span><br><span class="line"><span class="comment">    thread -&gt; 传出参数，if 创建成功，则将线程ID存入指针指向的内存</span></span><br><span class="line"><span class="comment">    attr -&gt; 线程属性，一般情况默认NULL即可</span></span><br><span class="line"><span class="comment">    start_routine -&gt; 函数指针，创建出的子线程的处理动作</span></span><br><span class="line"><span class="comment">    arg -&gt; 作为实参传递到start_routine指针指向的函数内部</span></span><br><span class="line"><span class="comment">    线程创建成功则返回0</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pthread_create</span><span class="params">(<span class="type">pthread_t</span> *thread, <span class="type">const</span> <span class="type">pthread_attrt_t</span> *attr, <span class="type">void</span> *(*start_routine)(<span class="type">void</span> *), <span class="type">void</span> *arg)</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    线程退出函数 -&gt; 一旦调用，线程退出</span></span><br><span class="line"><span class="comment">    不会导致虚拟地址空间的释放（主要针对主线程）</span></span><br><span class="line"><span class="comment">    retval -&gt; 线程退出时携带的数据，若不需携带则指定为NULL</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">pthread_exit</span><span class="params">(<span class="type">void</span> *retval)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    线程回收函数 -&gt; 每次只能回收一个子线程</span></span><br><span class="line"><span class="comment">    thread -&gt; 要被回收的子线程的线程ID</span></span><br><span class="line"><span class="comment">    retval -&gt; 传出参数，二级指针，指向一级指针的地址，该地址中存储了pthread_exit()传递出的数据，若不需要，则指定为NULL</span></span><br><span class="line"><span class="comment">    线程回收成功则返回0</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pthread_join</span><span class="params">(<span class="type">pthread_t</span> thread, <span class="type">void</span> **retval)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    线程分离函数 -&gt; 子线程和主线程分离后，其退出时占用的内核资源由其他进程接管并回收</span></span><br><span class="line"><span class="comment">    分离后主线程中的线程回收函数无法回收子线程资源</span></span><br><span class="line"><span class="comment">    thread -&gt; 要与主线程分离的子线程ID</span></span><br><span class="line"><span class="comment">    线程分离成功则返回0</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pthread_detach</span><span class="params">(<span class="type">pthread_t</span> thread)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="基本用法-1"><a href="#基本用法-1" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// sample.c -&gt; 主线程接收子线程传出的数据</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">callback</span><span class="params">(<span class="type">void</span>* arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;子线程:%ld\n&quot;</span>, <span class="built_in">pthread_self</span>()); <span class="comment">// 打印子线程的线程ID</span></span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> *a = (<span class="type">int</span>*) arg; <span class="comment">// 强制类型转换</span></span><br><span class="line">    *a = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">pthread_exit</span>(&amp;a); <span class="comment">// 线程退出，并将地址传给主线程的pthread_join()函数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">pthread_t</span> tid; <span class="comment">// 线程tid</span></span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> a; <span class="comment">// 测试变量a</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">pthread_create</span>(&amp;tid, <span class="literal">NULL</span>, callback, &amp;a); <span class="comment">// 创建子线程</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;主线程:%ld\n&quot;</span>, <span class="built_in">pthread_self</span>()); <span class="comment">// 打印主线程的线程ID</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">pthread_join</span>(tid, <span class="literal">NULL</span>); <span class="comment">// 利用线程回收函数</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;a = %d\n&quot;</span>, a);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">pthread_exit</span>(<span class="literal">NULL</span>); <span class="comment">// 线程退出函数</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    linux下执行命令</span></span><br><span class="line"><span class="comment">    gcc sample.c -lpthread -o ./bin/app</span></span><br><span class="line"><span class="comment">    ./bin/app</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="线程同步的4种方式"><a href="#线程同步的4种方式" class="headerlink" title="线程同步的4种方式"></a>线程同步的4种方式</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 4种同步方式 -&gt; linux环境</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 互斥锁 -&gt; 一般情况下，每一个共享资源对应一把互斥锁，锁的个数与线程的个数无关</span></span><br><span class="line"><span class="type">pthread_mutex_t</span> mutex; <span class="comment">// 互斥锁的类型</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    互斥锁初始化函数和释放函数</span></span><br><span class="line"><span class="comment">    restrict mutex 和 mutex -&gt; 互斥锁变量的地址</span></span><br><span class="line"><span class="comment">    attr -&gt; 属性，默认指定为NULL</span></span><br><span class="line"><span class="comment">    函数调用成功会返回0</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pthread_mutex_init</span><span class="params">(<span class="type">pthread_mutex_t</span> *restrict mutex, <span class="type">const</span> <span class="type">pthread_mutexattr_t</span> *restrict attr)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pthread_mutex_destroy</span><span class="params">(<span class="type">pthread_mutex_t</span> *mutex)</span></span>;</span><br><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment">    pthread_mutex_init(&amp;mutex, NULL);</span></span><br><span class="line"><span class="comment">    ...</span></span><br><span class="line"><span class="comment">    pthread_mutex_destroy(&amp;mutex);</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pthread_mutex_lock</span><span class="params">(<span class="type">pthread_mutex_t</span> *mutex)</span></span>; <span class="comment">// 加锁函数</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pthread_mutex_unlock</span><span class="params">(<span class="type">pthread_mutex_t</span> *mutex)</span></span>; <span class="comment">// 解锁函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 读写锁 -&gt; if 所有进程都是读操作，那么读是并行的（但是使用互斥锁，读操作也是串行的）</span></span><br><span class="line"><span class="type">pthread_rwlock_t</span> rwlock; <span class="comment">// 读写锁的类型</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 条件变量 -&gt; 生产者 &amp; 消费者模型，实质：线程阻塞</span></span><br><span class="line"><span class="type">pthread_cond_t</span> cond; <span class="comment">// 条件变量类型</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    线程阻塞函数 -&gt; 线程调用则被阻塞，被唤醒后继续执行</span></span><br><span class="line"><span class="comment">    restrict cond -&gt; 条件变量的地址</span></span><br><span class="line"><span class="comment">    restrict mutex -&gt; 互斥锁的地址</span></span><br><span class="line"><span class="comment">    线程唤醒函数 -&gt; 唤醒阻塞在条件变量上的线程，至少一个解除阻塞</span></span><br><span class="line"><span class="comment">    cond -&gt; 条件变量的地址</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pthread_cond_wait</span><span class="params">(<span class="type">pthread_cond_t</span> *restrict cond, <span class="type">pthread_mutex_t</span> *restrict mutex)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pthread_cond_signal</span><span class="params">(<span class="type">pthread_cond_t</span> *cond)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 信号量函数 -&gt; 生产者 &amp; 消费者</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;semaphore.h&gt;</span></span></span><br><span class="line"><span class="type">sem_t</span> sem; <span class="comment">// 信号量类型</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    信号量初始化和释放函数</span></span><br><span class="line"><span class="comment">    sem -&gt; 信号量变量的地址</span></span><br><span class="line"><span class="comment">    pshared -&gt; 0：线程同步；非0：进程同步</span></span><br><span class="line"><span class="comment">    value -&gt; 初始化信号量拥有的资源数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">sem_init</span><span class="params">(<span class="type">sem_t</span> *sem, <span class="type">int</span> pshared, <span class="type">unsigned</span> <span class="type">int</span> value)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">sem_destroy</span><span class="params">(<span class="type">sem_t</span> *sem)</span></span>;</span><br><span class="line"><span class="comment">// wait和post函数</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">sem_wait</span><span class="params">(<span class="type">sem_t</span> *sem)</span></span>; <span class="comment">// 检测是否需要等待，若有资源可用，则资源数 — 1；否则阻塞</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">sem_post</span><span class="params">(<span class="type">sem_t</span> *sem)</span></span>; <span class="comment">// 一般工作完使用，资源数 + 1</span></span><br></pre></td></tr></table></figure>
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2024/10/28/%E5%86%8D%E8%B0%88%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+              2025-06-28 11:01:01
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/C/" title="C++">
+                        #C++
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2024/10/31/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" target="_self">
+                <span>Next</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#C-11%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-text">C++11多线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B4%E7%95%8C%E5%8C%BA%E4%BA%92%E6%96%A5%E9%94%81"><span class="toc-text">临界区互斥锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1"><span class="toc-text">同步通信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97CAS"><span class="toc-text">无锁队列CAS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-text">Linux多线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%87%BD%E6%95%B0"><span class="toc-text">基本函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95-1"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E7%9A%844%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-text">线程同步的4种方式</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2025 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+    <div class="footer-views">
+      
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+      
+          本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        
+      
+          本站访客数<span id="busuanzi_value_site_uv"></span>人
+        
+      
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + C%2B%2B%20%E5%A4%9A%E7%BA%BF%E7%A8%8B + '&url=' + http%3A%2F%2Fexample.com%2F2024%2F10%2F29%2FC-%25E5%25A4%259A%25E7%25BA%25BF%25E7%25A8%258B%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2024/10/29/C-%E5%A4%9A%E7%BA%BF%E7%A8%8B/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>

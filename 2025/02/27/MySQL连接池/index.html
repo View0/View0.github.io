@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="John Doe" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
+    
+      MySQL 连接池 
+      
+      
+      |
+    
+     Hexo Blogs
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.jpg" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Pixel</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">MySQL 连接池</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+          2025-06-28 11:16:55
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+                    #数据库
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <blockquote>
+<p>为了提高MySQL数据库（基于C&#x2F;S设计）的访问瓶颈，除了在服务器端增加缓存服务器缓存常用的数据之外（例如redis），还可以增加连接池，<mark>来提高MySQL Server的访问效率</mark>，在高并发情况下，<mark>大量的 TCP三次握手、MySQL Server连接认证、MySQL Server关闭连接回收资源和TCP四次挥手所耗费的性能时间也是很明显的</mark>，增加连接池就是为了减少这一部分的性能损耗。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://gitee.com/far-view/pixel-my-sqlpool">Gitee 源码</a></p>
+<h2 id="连接池变量设计"><a href="#连接池变量设计" class="headerlink" title="连接池变量设计"></a>连接池变量设计</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MySQLConnectionPool.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> MYSQLCONNECTIONPOOL_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MYSQLCONNECTIONPOOL_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;atomic&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;condition_variable&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;functional&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Connection.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">实现连接池功能模块</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ConnectionPool</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">// 获取连接池对象实例</span></span><br><span class="line">	<span class="function"><span class="type">static</span> ConnectionPool* <span class="title">getConnectionPool</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 给外部提供接口，从连接池中获取一个可用的空闲连接</span></span><br><span class="line">	<span class="function">shared_ptr&lt;Connection&gt; <span class="title">getConnection</span><span class="params">()</span></span>; <span class="comment">// 智能指针自动管理外部用完连接的“释放” -&gt; 归还连接池</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="built_in">ConnectionPool</span>(); <span class="comment">// 单例 -&gt; 构造函数私有化</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">loadConfigFile</span><span class="params">()</span></span>; <span class="comment">// 从配置文件中加载配置项</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 运行在独立的线程中，专门负责生产新连接</span></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">produceConnectionTask</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 运行在独立的线程中，专门负责释放空闲连接</span></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">scannerConnectionTask</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">	string _ip; <span class="comment">// MySQL的ip地址</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span> _port; <span class="comment">// MySQL的端口号（默认3306）</span></span><br><span class="line">	string _username; <span class="comment">// MySQL登录用户名</span></span><br><span class="line">	string _password; <span class="comment">// MySQL登录密码</span></span><br><span class="line">	string _dbname; <span class="comment">// MySQL数据库名称</span></span><br><span class="line">	<span class="type">int</span> _initSize; <span class="comment">// 连接池的初始连接量</span></span><br><span class="line">	<span class="type">int</span> _maxSize; <span class="comment">// 连接池的最大连接量</span></span><br><span class="line">	<span class="type">int</span> _maxIdleTime; <span class="comment">// 连接池最大空闲时间</span></span><br><span class="line">	<span class="type">int</span> _connectionTimeout; <span class="comment">// 连接池获取连接的超时时间</span></span><br><span class="line"></span><br><span class="line">	queue&lt;Connection*&gt; _connectionQue; <span class="comment">// 存储MySQL连接的队列</span></span><br><span class="line">	mutex _queueMutex; <span class="comment">// 维护连接队列的线程安全互斥锁</span></span><br><span class="line">	atomic_int _connectionCnt; <span class="comment">// 记录所创建的connection连接的总数量</span></span><br><span class="line">	condition_variable cv; <span class="comment">// 设置条件变量，用于连接生产线程和连接消费线程的通信</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="连接池功能设计"><a href="#连接池功能设计" class="headerlink" title="连接池功能设计"></a>连接池功能设计</h2><ol>
+<li>连接池只需要一个实例，故<code>ConnectionPool</code>以<a target="_blank" rel="noopener" href="https://view0.github.io/2024/10/28/%E5%86%8D%E8%B0%88%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">单例模式</a>进行设计。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 线程安全的懒汉单例函数接口</span></span><br><span class="line"><span class="function">ConnectionPool* <span class="title">ConnectionPool::getConnectionPool</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">static</span> ConnectionPool pool; <span class="comment">// 编译器lock和unlock</span></span><br><span class="line">	<span class="keyword">return</span> &amp;pool;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>从<code>ConnectionPool</code>中可以获取和MySQL连接的<code>Connection</code>。</p>
+</li>
+<li><p>空闲连接<code>Connection</code>全部维护在一个线程安全的<code>Connection</code>队列中，使用<mark>互斥锁</mark>来保证队列的线程安全。</p>
+</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ConnectionPool</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    queue&lt;Connection*&gt; _connectionQue; <span class="comment">// 存储MySQL连接的队列</span></span><br><span class="line">	mutex _queueMutex; <span class="comment">// 维护连接队列的线程安全互斥锁</span></span><br><span class="line">    atomic_int _connectionCnt; <span class="comment">// 记录所创建的connection连接的总数量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>如果<code>Connection</code>队列为空，还需要再获取连接，此时需要动态创建连接，上限数量是<code>maxSize</code>。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 运行在独立的线程中，专门负责生产新连接</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">ConnectionPool::produceConnectionTask</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">		队列为空 → 生产连接 → 通知消费者</span></span><br><span class="line"><span class="comment">		队列非空 → 进入等到状态（等待状态锁是释放的），以便消费者消费</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">	<span class="keyword">for</span> (;;)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 生产者拿到锁后，消费者无法加锁</span></span><br><span class="line">		<span class="function">unique_lock&lt;mutex&gt; <span class="title">lock</span><span class="params">(_queueMutex)</span></span>;</span><br><span class="line">		<span class="keyword">while</span> (!_connectionQue.<span class="built_in">empty</span>())</span><br><span class="line">		&#123;</span><br><span class="line">			cv.<span class="built_in">wait</span>(lock); <span class="comment">// 队列不空，此时生产线程进入等待状态</span></span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// 连接数量未达上限，继续创建新的连接</span></span><br><span class="line">		<span class="keyword">if</span> (_connectionCnt &lt; _maxSize)</span><br><span class="line">		&#123;</span><br><span class="line">			Connection* p = <span class="keyword">new</span> <span class="built_in">Connection</span>();</span><br><span class="line">			p-&gt;<span class="built_in">connect</span>(_ip, _port, _username, _password, _dbname);</span><br><span class="line">			p-&gt;<span class="built_in">refreshAliveTime</span>(); <span class="comment">// 刷新开始空闲的起始时间</span></span><br><span class="line">			_connectionQue.<span class="built_in">push</span>(p);</span><br><span class="line">			_connectionCnt++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 通知消费者线程，可以消费连接了</span></span><br><span class="line">		cv.<span class="built_in">notify_all</span>();</span><br><span class="line">	&#125; <span class="comment">// 解锁，消费者有机会获得锁开始消费</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>队列中空闲时间超过<code>maxIdleTime</code>会被释放掉，只保留初始的<code>initSize</code>个连接即可。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 运行在独立的线程中，专门负责释放空闲连接</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">ConnectionPool::scannerConnectionTask</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (;;)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 通过sleep模拟定时效果</span></span><br><span class="line">		this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">seconds</span>(_maxIdleTime));</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 扫描整个队列，释放多余的连接</span></span><br><span class="line">		<span class="function">unique_lock&lt;mutex&gt; <span class="title">lock</span><span class="params">(_queueMutex)</span></span>;</span><br><span class="line">		<span class="keyword">while</span> (_connectionCnt &gt; _initSize)</span><br><span class="line">		&#123;</span><br><span class="line">			Connection* p = _connectionQue.<span class="built_in">front</span>();</span><br><span class="line">			<span class="keyword">if</span> (p-&gt;<span class="built_in">getAliveTime</span>() &gt; (_maxIdleTime * <span class="number">1000</span>))</span><br><span class="line">			&#123;</span><br><span class="line">				_connectionQue.<span class="built_in">pop</span>();</span><br><span class="line">				_connectionCnt--;</span><br><span class="line">				<span class="keyword">delete</span> p; <span class="comment">// 调用~Connection()释放连接</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">break</span>; <span class="comment">// 队头的连接未超过最大存活时间，其他时间肯定没有</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li><code>Connection</code>队列为空且连接数量已达上限<code>maxSize</code>，则等待<code>connectionTimeout</code>时候若还获取不到空闲的连接，那么获取连接失败。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 给外部提供接口，从连接池中获取一个可用的空闲连接</span></span><br><span class="line"><span class="function">shared_ptr&lt;Connection&gt; <span class="title">ConnectionPool::getConnection</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="function">unique_lock&lt;mutex&gt; <span class="title">lock</span><span class="params">(_queueMutex)</span></span>;</span><br><span class="line">	<span class="keyword">while</span> (_connectionQue.<span class="built_in">empty</span>())</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 在_connectionTimeout这段时间内，若连接池非空，都会被通知可以消费了；若超时（未被唤醒或被唤醒但未抢到锁），则视为获取连接失败</span></span><br><span class="line">		<span class="keyword">if</span> (cv_status::timeout == cv.<span class="built_in">wait_for</span>(lock, chrono::<span class="built_in">milliseconds</span>(_connectionTimeout)))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (_connectionQue.<span class="built_in">empty</span>())</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">LOG</span>(<span class="string">&quot;获取空闲连接超时了...获取连接失败&quot;</span>);</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	shared_ptr智能指针析构时，会把connection资源直接delete</span></span><br><span class="line"><span class="comment">	相当于调用connection的析构函数，connection会被close</span></span><br><span class="line"><span class="comment">	故需要自定义shared_ptr释放资源的方式，将connection直接归还到queue当中</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">	<span class="function">shared_ptr&lt;Connection&gt; <span class="title">sp</span><span class="params">(_connectionQue.front(), </span></span></span><br><span class="line"><span class="params"><span class="function">		[&amp;](Connection* pcon) &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">			<span class="comment">// 此处是在服务器应用线程中调用，故一定要考虑队列的线程安全</span></span></span></span><br><span class="line"><span class="params"><span class="function">			unique_lock&lt;mutex&gt; lock(_queueMutex);</span></span></span><br><span class="line"><span class="params"><span class="function">			pcon-&gt;refreshAliveTime(); <span class="comment">// 刷新开始空闲的起始时间</span></span></span></span><br><span class="line"><span class="params"><span class="function">			_connectionQue.push(pcon);</span></span></span><br><span class="line"><span class="params"><span class="function">	&#125;)</span></span>;</span><br><span class="line"></span><br><span class="line">	_connectionQue.<span class="built_in">pop</span>();</span><br><span class="line">	cv.<span class="built_in">notify_all</span>(); <span class="comment">// 消费完通知生产者线程检查一下，若队列为空，则进行生产</span></span><br><span class="line">	<span class="keyword">return</span> sp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="智能指针的合理使用"><a href="#智能指针的合理使用" class="headerlink" title="智能指针的合理使用"></a>智能指针的合理使用</h2><blockquote>
+<p>用户获取到的连接用<code>shared_ptr</code>来管理，用lambda表达式定制连接释放的功能。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">   shared_ptr智能指针析构时，会把connection资源直接delete</span></span><br><span class="line"><span class="comment">   相当于调用connection的析构函数，connection会被close</span></span><br><span class="line"><span class="comment">   故需要自定义shared_ptr释放资源的方式，将connection直接归还到queue当中</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">   <span class="function">shared_ptr&lt;Connection&gt; <span class="title">sp</span><span class="params">(_connectionQue.front(), </span></span></span><br><span class="line"><span class="params"><span class="function">    [&amp;](Connection* pcon) &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">		<span class="comment">// 此处是在服务器应用线程中调用，故一定要考虑队列的线程安全</span></span></span></span><br><span class="line"><span class="params"><span class="function">		unique_lock&lt;mutex&gt; lock(_queueMutex);</span></span></span><br><span class="line"><span class="params"><span class="function">		pcon-&gt;refreshAliveTime(); <span class="comment">// 刷新开始空闲的起始时间</span></span></span></span><br><span class="line"><span class="params"><span class="function">		_connectionQue.push(pcon);</span></span></span><br><span class="line"><span class="params"><span class="function">&#125;)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这样可以保证<mark>不真正释放连接池里的MySQL连接，而是把连接归还到连接池中！</mark></li>
+</ul>
+<h2 id="生产者-消费者线程模型"><a href="#生产者-消费者线程模型" class="headerlink" title="生产者-消费者线程模型"></a>生产者-消费者线程模型</h2><blockquote>
+<p>MySQL连接和销毁的操作采用生产者和消费者模型来设计，同时结合条件变量、互斥锁控制线程安全。<br>生产者和消费者线程各司其职，生产者线程一旦检测到存放MySQL连接的队列为空就会根据实际情况（连接量是否已达最大限制）来选择是否创建新的MySQL连接；而消费者线程会定期存放MySQL连接的队列，根据实际情况（连接是否达到最大空闲时间和连接数）选择是否释放MySQL连接。</p>
+</blockquote>
+<h2 id="连接池测试"><a href="#连接池测试" class="headerlink" title="连接池测试"></a>连接池测试</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 建表语句</span><br><span class="line"><span class="keyword">CREATE TABLE</span> <span class="keyword">user</span> (</span><br><span class="line">	id <span class="type">INT</span> AUTO_INCREMENT <span class="keyword">PRIMARY KEY</span>,  <span class="comment">-- 添加一个自增主键</span></span><br><span class="line">	name <span class="type">VARCHAR</span>(<span class="number">50</span>) <span class="keyword">NOT NULL</span>,         <span class="comment">-- 用户名，最大长度为 50</span></span><br><span class="line">	age <span class="type">INT</span> <span class="keyword">NOT NULL</span>,                  <span class="comment">-- 年龄</span></span><br><span class="line">	sex <span class="type">VARCHAR</span>(<span class="number">10</span>) <span class="keyword">NOT NULL</span>           <span class="comment">-- 性别</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>demo2：单线程往数据库里插入1000条数据。</li>
+<li>demo3：不用MySQL连接池，开启4个线程往数据库中插入1000条数据。</li>
+<li>demo4：使用MySQL连接池，开启4个线程往数据库中插入1000条数据。</li>
+</ul>
+<p><img src="/../db_res/img1.png" alt="image.png"></p>
+<ul>
+<li>demo3需要43s，demo4仅需2s左右。（<mark>连接池初始10个连接，最大1024个连接，可以在配置文件修改。</mark>）</li>
+</ul>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/02/19/STL/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+              2025-06-28 11:16:55
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+                        #数据库
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2025/03/05/C-11%E6%96%B0%E7%89%B9%E6%80%A7/" target="_self">
+                <span>Next</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%8F%98%E9%87%8F%E8%AE%BE%E8%AE%A1"><span class="toc-text">连接池变量设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%8A%9F%E8%83%BD%E8%AE%BE%E8%AE%A1"><span class="toc-text">连接池功能设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E7%9A%84%E5%90%88%E7%90%86%E4%BD%BF%E7%94%A8"><span class="toc-text">智能指针的合理使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E4%BA%A7%E8%80%85-%E6%B6%88%E8%B4%B9%E8%80%85%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="toc-text">生产者-消费者线程模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%B1%A0%E6%B5%8B%E8%AF%95"><span class="toc-text">连接池测试</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2025 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+    <div class="footer-views">
+      
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+      
+          本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        
+      
+          本站访客数<span id="busuanzi_value_site_uv"></span>人
+        
+      
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + MySQL%20%E8%BF%9E%E6%8E%A5%E6%B1%A0 + '&url=' + http%3A%2F%2Fexample.com%2F2025%2F02%2F27%2FMySQL%25E8%25BF%259E%25E6%258E%25A5%25E6%25B1%25A0%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2025/02/27/MySQL%E8%BF%9E%E6%8E%A5%E6%B1%A0/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>

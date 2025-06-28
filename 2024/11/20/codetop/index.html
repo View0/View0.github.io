@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="John Doe" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
+    
+      codetop 
+      
+      
+      |
+    
+     Hexo Blogs
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.jpg" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Pixel</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">codetop</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+          2025-06-28 10:03:11
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E7%AE%97%E6%B3%95/" title="算法">
+                    #算法
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <blockquote>
+<p>依照CodeTop后端算法题考查频度（并非全部）。</p>
+</blockquote>
+<h3 id="3-无重复字符的最长子串"><a href="#3-无重复字符的最长子串" class="headerlink" title="3.无重复字符的最长子串"></a>3.无重复字符的最长子串</h3><p><mark>滑动窗口：</mark>维护一个<code>unordered_map</code>类型的<code>window</code>变量以统计当前窗口中各字符出现的次数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 个人喜欢的滑动窗口框架</span></span><br><span class="line"><span class="type">int</span> l = <span class="number">0</span>, r = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (r &lt; s.<span class="built_in">size</span>()) &#123;</span><br><span class="line">    <span class="comment">// 右窗口滑动</span></span><br><span class="line">    <span class="type">char</span> c = s[r++];</span><br><span class="line">    window[c]++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断左窗口是否要收缩</span></span><br><span class="line">    <span class="keyword">while</span> (window[c] &gt; <span class="number">1</span>) &#123; <span class="comment">// 题目条件：此题是窗口内不含重复字符</span></span><br><span class="line">        <span class="type">char</span> d = s[l++];</span><br><span class="line">        window[d]--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更新结果</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="25-K个一组翻转链表"><a href="#25-K个一组翻转链表" class="headerlink" title="25.K个一组翻转链表"></a>25.K个一组翻转链表</h3><p><code>[1,2,3,4,5](k=2)</code> → <code>[2,1,4,3,5]</code></p>
+<p><strong>模拟翻转：</strong> 利用<code>reverseK</code>翻转两个<code>head</code>和<code>tail</code>之间的<code>k</code>个节点，并返回重置后的头尾，然后先统计链表节点的总数，<code>k</code>个一组翻转即可。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 翻转head至tail之间的节点，并返回重置后的头尾</span></span><br><span class="line"><span class="function">pair&lt;ListNode*, ListNode*&gt; <span class="title">reverseK</span><span class="params">(ListNode* head, ListNode* tail)</span> </span>&#123;</span><br><span class="line">    ListNode* pre = tail-&gt;next;</span><br><span class="line">    ListNode* cur = head;</span><br><span class="line">    <span class="keyword">while</span> (pre != tail) &#123;</span><br><span class="line">        ListNode* next = cur-&gt;next;</span><br><span class="line">        cur-&gt;next = pre;</span><br><span class="line">        pre = cur;</span><br><span class="line">        cur = next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &#123;tail, head&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="215-数组中的第k个最大元素"><a href="#215-数组中的第k个最大元素" class="headerlink" title="215.数组中的第k个最大元素"></a>215.数组中的第k个最大元素</h3><p><strong>快速选择：</strong> 快速排序的核心是“哨兵划分”和“递归”。</p>
+<p><img src="https://pic.leetcode-cn.com/1612615552-rifQwI-Picture1.png"></p>
+<p><mark>快速选择的思路是：</mark>数组长度为N，如果某次哨兵划分后，基准数的索引正好是N - k，则它就是第k大的数字。<mark>然而，对于包含大量重复元素的数组，每轮的哨兵划分都可能将数组划分为1和n - 1两个部分，此时快排的时间复杂度会退化至<code>O(N^2)</code>。</mark></p>
+<ul>
+<li>三路划分：每轮划分数组为三个部分，当发现第k大数字处在“等于基准数”的子数组中时，便可直接返回。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">quickSelect</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 随机选择基准数</span></span><br><span class="line">    <span class="type">int</span> pivot = nums[<span class="built_in">rand</span>() % nums.<span class="built_in">size</span>()];</span><br><span class="line">    <span class="comment">// 将大于、小于、等于pivot的元素划分至big、small、equal中</span></span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; big, equal, small;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; num : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> (num &gt; pivot)</span><br><span class="line">            big.<span class="built_in">emplace_back</span>(num);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (num &lt; pivot)</span><br><span class="line">            small.<span class="built_in">emplace_back</span>(num);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            equal.<span class="built_in">emplace_back</span>(num);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 第k大的元素在big中</span></span><br><span class="line">    <span class="keyword">if</span> (k &lt;= big.<span class="built_in">size</span>())</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">quickSelect</span>(big, k);</span><br><span class="line">        <span class="comment">// 第k大的元素在small中</span></span><br><span class="line">    <span class="keyword">if</span> (k - big.<span class="built_in">size</span>() &gt; equal.<span class="built_in">size</span>()) <span class="comment">// 注意这里是和equal.size()对比，等于pivot的元素可能不止一个！</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">quickSelect</span>(small, k - big.<span class="built_in">size</span>() - equal.<span class="built_in">size</span>());</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> pivot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="103-二叉树的锯齿形层序遍历"><a href="#103-二叉树的锯齿形层序遍历" class="headerlink" title="103.二叉树的锯齿形层序遍历"></a>103.二叉树的锯齿形层序遍历</h3><p><strong>奇数层翻转：</strong> 利用<code>result.size() % 2 == 1</code>来判断该层是否为奇数层，若是奇数层，则用<code>reverse</code>翻转。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 核心</span></span><br><span class="line"><span class="keyword">if</span> (res.<span class="built_in">size</span>() % <span class="number">2</span> == <span class="number">1</span>)</span><br><span class="line">    <span class="built_in">reverse</span>(tmp.<span class="built_in">begin</span>(), tmp.<span class="built_in">end</span>());</span><br><span class="line">res.<span class="built_in">emplace_back</span>(tmp);</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-最长回文子串"><a href="#5-最长回文子串" class="headerlink" title="5.最长回文子串"></a>5.最长回文子串</h3><p><strong>中心扩展法：</strong> 子串不断向两边扩展，如果两边的字母相同就继续扩展。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 核心 -&gt; 中心扩展！</span></span><br><span class="line"><span class="comment">// 寻找以left 和 right为中心的最长回文子串</span></span><br><span class="line"><span class="function">string <span class="title">isPalding</span><span class="params">(string s, <span class="type">int</span> left, <span class="type">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (left &gt;= <span class="number">0</span> &amp;&amp; right &lt; s.<span class="built_in">size</span>() &amp;&amp; s[left] == s[right]) &#123;</span><br><span class="line">        left--;</span><br><span class="line">        right++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s.<span class="built_in">substr</span>(left + <span class="number">1</span>, right - left - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="236-二叉树的最近公共祖先"><a href="#236-二叉树的最近公共祖先" class="headerlink" title="236.二叉树的最近公共祖先"></a>236.二叉树的最近公共祖先</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">TreeNode* <span class="title">lowestCommonAncestor</span><span class="params">(TreeNode* root, TreeNode* p, TreeNode* q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == p || root == q || root == <span class="literal">nullptr</span>) <span class="keyword">return</span> root;</span><br><span class="line">    TreeNode* left = <span class="built_in">lowestCommonAncestor</span>(root-&gt;left, p, q);</span><br><span class="line">    TreeNode* right = <span class="built_in">lowestCommonAncestor</span>(root-&gt;right, p, q);</span><br><span class="line">    <span class="keyword">if</span> (left != <span class="literal">nullptr</span> &amp;&amp; right != <span class="literal">nullptr</span>) <span class="keyword">return</span> root;</span><br><span class="line">    <span class="keyword">if</span> (left == <span class="literal">nullptr</span>) <span class="keyword">return</span> right;</span><br><span class="line">    <span class="keyword">return</span> left;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="143-重排链表"><a href="#143-重排链表" class="headerlink" title="143.重排链表"></a>143.重排链表</h3><p>若用<code>vector</code>会带来<code>O(N)</code>的空间复杂度。<br><mark>寻找链表中点 + 链表逆序 + 合并链表：</mark>快慢指针先找到链表中点<code>mid</code>，然后反转链表后半部分，最后合并即可。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">reorderList</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// middleNode自定义函数：寻找链表中点</span></span><br><span class="line">    ListNode* mid = <span class="built_in">middleNode</span>(head);</span><br><span class="line">    ListNode* l1 = head;</span><br><span class="line">    ListNode* l2 = mid-&gt;next;</span><br><span class="line">    mid-&gt;next = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">// reverseList自定义函数：反转链表</span></span><br><span class="line">    l2 = <span class="built_in">reverseList</span>(l2);</span><br><span class="line">    <span class="comment">// mergeList自定义函数：合并链表</span></span><br><span class="line">    <span class="built_in">mergeList</span>(l1, l2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="42-接雨水"><a href="#42-接雨水" class="headerlink" title="42.接雨水"></a>42.接雨水</h3><p><strong>双指针优化：</strong> 先用两个容器统计柱子左右两边最高的柱子，依次计算能接的雨水量。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">trap</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; height)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 第1个和最后1个柱子无法接雨水</span></span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">maxLeft</span><span class="params">(height.size(), <span class="number">0</span>)</span></span>;</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">maxRight</span><span class="params">(height.size(), <span class="number">0</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    maxLeft[<span class="number">0</span>] = height[<span class="number">0</span>];</span><br><span class="line">    maxRight[height.<span class="built_in">size</span>() - <span class="number">1</span>] = height[height.<span class="built_in">size</span>() - <span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; height.<span class="built_in">size</span>(); ++i)</span><br><span class="line">        maxLeft[i] = <span class="built_in">max</span>(maxLeft[i - <span class="number">1</span>], height[i]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = height.<span class="built_in">size</span>() - <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i)</span><br><span class="line">        maxRight[i] = <span class="built_in">max</span>(maxRight[i + <span class="number">1</span>], height[i]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; height.<span class="built_in">size</span>() - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="type">int</span> temp = <span class="built_in">min</span>(maxLeft[i], maxRight[i]) - height[i];</span><br><span class="line">        <span class="keyword">if</span> (temp &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            sum += temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="54-螺旋矩阵"><a href="#54-螺旋矩阵" class="headerlink" title="54.螺旋矩阵"></a>54.螺旋矩阵</h3><p><mark>模拟遍历：</mark> </p>
+<ol>
+<li>若<code>matrix</code>为空，则直接返回空列表</li>
+<li>初始化左、右、上、下四个边界<code>l</code> <code>r</code> <code>t</code> <code>b</code></li>
+<li>按照题目要求的顺序循环遍历</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;<span class="type">int</span>&gt; result;</span><br><span class="line"><span class="comment">// 初始化4个边界</span></span><br><span class="line"><span class="type">int</span> l = <span class="number">0</span>, r = matrix[<span class="number">0</span>].<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> t = <span class="number">0</span>, b = matrix.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 核心：模拟遍历</span></span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = l; i &lt;= r; ++i)</span><br><span class="line">        result.<span class="built_in">emplace_back</span>(matrix[t][i]);</span><br><span class="line">    <span class="keyword">if</span> (++t &gt; b) <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = t; i &lt;= b; ++i)</span><br><span class="line">        result.<span class="built_in">emplace_back</span>(matrix[i][r]);</span><br><span class="line">    <span class="keyword">if</span> (--r &lt; l) <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = r; i &gt;= l; --i)</span><br><span class="line">        result.<span class="built_in">emplace_back</span>(matrix[b][i]);</span><br><span class="line">    <span class="keyword">if</span> (--b &lt; t) <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = b; i &gt;= t; --i)</span><br><span class="line">        result.<span class="built_in">emplace_back</span>(matrix[i][l]);</span><br><span class="line">    <span class="keyword">if</span> (++l &gt; r) <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="82-删除排序链表中的重复元素II"><a href="#82-删除排序链表中的重复元素II" class="headerlink" title="82.删除排序链表中的重复元素II"></a>82.删除排序链表中的重复元素II</h3><p><mark>核心：</mark> 利用辅助前序节点原地删除。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ListNode* dummy = <span class="keyword">new</span> <span class="built_in">ListNode</span>(<span class="number">-1</span>);</span><br><span class="line">dummy-&gt;next = head;</span><br><span class="line">ListNode* cur = dummy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (cur-&gt;next &amp;&amp; cur-&gt;next-&gt;next) &#123;</span><br><span class="line">    <span class="type">int</span> val = cur-&gt;next-&gt;val; <span class="comment">// 当前位置下一节点的元素</span></span><br><span class="line">    <span class="keyword">if</span> (cur-&gt;next-&gt;next-&gt;val == val) &#123;</span><br><span class="line">        <span class="comment">// 有重复 -&gt; 将重复的所有元素删除</span></span><br><span class="line">        <span class="keyword">while</span> (cur-&gt;next &amp;&amp; cur-&gt;next-&gt;val == val)</span><br><span class="line">            cur-&gt;next = cur-&gt;next-&gt;next;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 无重复 -&gt; 辅助前序节点后移</span></span><br><span class="line">        cur = cur-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="124-二叉树的最大路径和"><a href="#124-二叉树的最大路径和" class="headerlink" title="124.二叉树的最大路径和"></a>124.二叉树的最大路径和</h3><p>核心：利用一个简化的函数<code>maxGain(node)</code>计算二叉树中某一个节点的最大贡献值（<mark>以该节点为根节点的子树中寻找以该节点为起点的一条路径，使得该路径上的节点值之和最大</mark>）。</p>
+<blockquote>
+<p>ex: [20, 15, 7]中，15和7的最大贡献值分别为15和7，而20的最大贡献值为35。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">maxGain</span><span class="params">(TreeNode* node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">    <span class="type">int</span> leftGain = <span class="built_in">max</span>(<span class="built_in">maxGain</span>(node-&gt;left), <span class="number">0</span>);</span><br><span class="line">    <span class="type">int</span> rightGain = <span class="built_in">max</span>(<span class="built_in">maxGain</span>(node-&gt;right), <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 节点的最大路径和取决于该节点的值与该节点的左右子节点的最大贡献值</span></span><br><span class="line">    <span class="type">int</span> priceNewpath = node-&gt;val + leftGain + rightGain;</span><br><span class="line"></span><br><span class="line">    maxSum = <span class="built_in">max</span>(maxSum, priceNewpath);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> node-&gt;val + <span class="built_in">max</span>(leftGain, rightGain);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="31-下一个排列"><a href="#31-下一个排列" class="headerlink" title="31.下一个排列"></a>31.下一个排列</h3><p><mark>思路：</mark> 将一个左边的[较小数]与右边的[较大数]交换，以能够让排列变大，从而得到下一个排列。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">nextPermutation</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> i = nums.<span class="built_in">size</span>() - <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i &gt;= <span class="number">0</span> &amp;&amp; nums[i] &gt;= nums[i + <span class="number">1</span>])</span><br><span class="line">        i--;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> (i &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="type">int</span> j = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; nums[i] &gt;= nums[j])</span><br><span class="line">            j--;</span><br><span class="line">            </span><br><span class="line">        <span class="comment">// 交换左边的[较小数]与右边的[较大数]</span></span><br><span class="line">        <span class="built_in">swap</span>(nums[i], nums[j]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">reverse</span>(nums.<span class="built_in">begin</span>() + i + <span class="number">1</span>, nums.<span class="built_in">end</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2024/11/15/LRU%E7%BC%93%E5%AD%98/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+              2025-06-28 10:03:11
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E7%AE%97%E6%B3%95/" title="算法">
+                        #算法
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2024/12/04/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95%E7%AC%94%E8%AE%B0/" target="_self">
+                <span>Next</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2"><span class="toc-text">3.无重复字符的最长子串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#25-K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8"><span class="toc-text">25.K个一组翻转链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACk%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0"><span class="toc-text">215.数组中的第k个最大元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#103-%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%94%AF%E9%BD%BF%E5%BD%A2%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86"><span class="toc-text">103.二叉树的锯齿形层序遍历</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2"><span class="toc-text">5.最长回文子串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#236-%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88"><span class="toc-text">236.二叉树的最近公共祖先</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#143-%E9%87%8D%E6%8E%92%E9%93%BE%E8%A1%A8"><span class="toc-text">143.重排链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#42-%E6%8E%A5%E9%9B%A8%E6%B0%B4"><span class="toc-text">42.接雨水</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#54-%E8%9E%BA%E6%97%8B%E7%9F%A9%E9%98%B5"><span class="toc-text">54.螺旋矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#82-%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0II"><span class="toc-text">82.删除排序链表中的重复元素II</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#124-%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C"><span class="toc-text">124.二叉树的最大路径和</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#31-%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%8E%92%E5%88%97"><span class="toc-text">31.下一个排列</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2025 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+    <div class="footer-views">
+      
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+      
+          本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        
+      
+          本站访客数<span id="busuanzi_value_site_uv"></span>人
+        
+      
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + codetop + '&url=' + http%3A%2F%2Fexample.com%2F2024%2F11%2F20%2Fcodetop%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2024/11/20/codetop/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>
