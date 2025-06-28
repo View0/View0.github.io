@@ -13,7 +13,7 @@
   
   <title>
     
-      Tag 
+      C++ Workflow框架 
       
       
       |
@@ -148,21 +148,190 @@
 
 
 
-  <!-- 标签页 url形式：https://yoursite/tags/ -->
-  <div class="container tag-index">
-    <div>
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="tag">中间件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">4</span></li></ul>
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">C++ Workflow框架</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+          2025-06-28 22:34:08
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/C/" title="C++">
+                    #C++
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p><a target="_blank" rel="noopener" href="https://github.com/sogou/workflow">Workflow源码及官方文档</a></p>
+<p>Sogou 公司 C++服务器引擎，不止是网络库，支持大部分 C++后端服务。</p>
+<ol>
+<li><mark>抽象粒度比较大的异步任务；</mark></li>
+<li><mark>任务流组织多个异步任务；</mark></li>
+<li><mark>不占用线程协调任务。</mark></li>
+</ol>
+<p>编程范式：<mark>程序 &#x3D; 协议 + 算法 + 任务流：<mark></p>
+<p>协议：</p>
+<ul>
+<li>内置通用网络协议，包括 Http、Redis 和各种 RPC。</li>
+<li>用户可自定义网络协议，但需要提供序列化和反序列化协议。</li>
+</ul>
+<p>算法：</p>
+<ul>
+<li>算法是与协议对称的，协议调用是rpc，算法调用就是一次apc。</li>
+<li>提供的通用算法可以直接使用，亦可以自定义算法。</li>
+</ul>
+<p>任务流：</p>
+<ul>
+<li>任务流是实际的业务逻辑，即把协议和算法放在流程图中使用起来。</li>
+<li>典型的任务流是一个闭合的串并联图，任务流图可以根据每一步的结果动态生成，任务异步执行。</li>
+</ul>
+<h2 id="异步任务"><a href="#异步任务" class="headerlink" title="异步任务"></a>异步任务</h2><blockquote>
+<p>异步任务一般借助回调实现。<br>需要建立 Redis 连接，以 Reactor 为例：</p>
+<ol>
+<li>建立连接（可能涉及多次回调：DNS 解析、写回调等）</li>
+<li>发送命令，等待返回值（异步可能涉及多次读回调，一次没读完）</li>
+</ol>
+<ul>
+<li>同步的话线程会阻塞等待 Redis 返回值</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>即当服务器去访问 Redis，可能涉及n个回调，不太适合做业务（<mark>使用类似 Reactor 的网络库可能一个业务会有多次回调</mark>）。</p>
+</blockquote>
+<p>workflow 对异步任务进行抽象，其抽象的是一个<mark>粒度比较大的异步任务</mark>，n个回调抽象成 1次回调，隐藏底层实现。</p>
+<p>workflow 抽象了哪些粒度大的异步任务？</p>
+<ol>
+<li>网络</li>
+</ol>
+<ul>
+<li>服务端 server</li>
+<li>客户端 redis\mysql\kafka\http</li>
+</ul>
+<ol start="2">
+<li>磁盘 IO</li>
+</ol>
+<ul>
+<li><code>read</code>、<code>write</code>、<code>fsync</code>、<code>fdsync</code></li>
+</ul>
+<ol start="3">
+<li>定时任务</li>
+<li>计算任务</li>
+</ol>
+<h2 id="任务处理"><a href="#任务处理" class="headerlink" title="任务处理"></a>任务处理</h2><p>如何组织异步任务？</p>
+<ol>
+<li>组织：串联、并联、DAG。</li>
+<li>协调：计数器、资源池、条件任务。</li>
+</ol>
+<h2 id="线程模型"><a href="#线程模型" class="headerlink" title="线程模型"></a>线程模型</h2><p>一般而言：</p>
+<ol>
+<li>1 个主线程</li>
+<li>4 个 poller 线程：检测条件是否满足（网络事件触发、定时任务触发）。</li>
+<li>20 个 worker 线程：调用回调函数。</li>
+<li>8 个 go 线程：执行耗时计算的任务。</li>
+</ol>
+<p>以下述代码为例：main 线程让 poller 线程监听 8888 端口，基于任务，创建<code>listenfd</code>，<code>listenfd</code>对 4取余，交由某个 poller 线程负责，该 poller 线程检测客户端是否建立连接，建立连接后得到<code>clientfd</code>，同样对4取余，交由某个 poller 线程负责，该 poller 线程检测客户端是否发送数据，收到数据后分割完整的数据包并解析协议，向一个队列中添加任务，worker 线程池中的某个线程从中获取任务，该 worker 线程会处理回调，如果任务中有耗时任务，不同的耗时任务有不同的队列，交给 go 线程池中的线程来处理，整个任务处理完成之后，将结果通过 poller 线程发给客户端。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;workflow/WFHttpServer.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">WFHttpServer <span class="title">server</span><span class="params">([](WFHttpTask *task) &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">        task-&gt;get_resp()-&gt;append_output_body(<span class="string">&quot;&lt;html&gt;Hello World!&lt;/html&gt;&quot;</span>);</span></span></span><br><span class="line"><span class="params"><span class="function">    &#125;)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (server.<span class="built_in">start</span>(<span class="number">8888</span>) == <span class="number">0</span>) &#123; <span class="comment">// start server on port 8888</span></span><br><span class="line">        <span class="built_in">getchar</span>(); <span class="comment">// press &quot;Enter&quot; to end.</span></span><br><span class="line">        server.<span class="built_in">stop</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>并发任务流，可能会面临操作临界资源的问题，如果用加锁的方式，可能需要业务层加锁操作，因此 workflow 提出了几种任务协调策略：</p>
+<ol>
+<li><code>counter</code>：计数器，用于控制工作流。<br>10 个任务，调用<code>counter-&gt;count()</code>，每个任务完成后，计数器减 1，当计数器为0即所有任务完成时，会回调一个函数。</li>
+<li><code>resource pool</code>：资源池 &#x3D;》“信号量”。</li>
+</ol>
+<p>任务运行时需要从资源池里获得一个资源，任务运行结束将资源放回资源池，不希望占用线程等待。</p>
+<p>100 个任务，资源池 10 个资源，初始时 10 个任务，有一个执行完成，剩余的 90 个任务就可以有 1 个获取到资源池中的 1 个资源来执行。<mark>如果用信号量实现会阻塞线程，而资源池不需要阻塞线程，资源池相当于用一个“条件”来控制。</mark></p>
+<ol start="3">
+<li>条件任务：任务包装器，通过对条件任务发送信号触发被包装任务的执行。</li>
+</ol>
+<h2 id="个人浅析"><a href="#个人浅析" class="headerlink" title="个人浅析"></a>个人浅析</h2><p>workflow框架通过任务流的方式，把粒度较大的任务划分为小粒度任务，并通过合理调度（取模）将这些小粒度任务分给各线程处理，<mark>实质就是尽可能让各线程负载均衡的思路。</mark></p>
+<ul>
+<li>思路有点类似Golang的GMP模型：就是通过合理调度（窃取、本地队列）让各M（工作线程）能尽可能均衡的负载协程G！</li>
+</ul>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/04/23/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E6%8A%80%E6%9C%AF/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+              2025-06-28 22:34:08
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/C/" title="C++">
+                        #C++
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1"><span class="toc-text">异步任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86"><span class="toc-text">任务处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="toc-text">线程模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AA%E4%BA%BA%E6%B5%85%E6%9E%90"><span class="toc-text">个人浅析</span></a></li></ol>
+      
     </div>
   </div>
-  
 
   
+<script src="/js/catalog.js"></script>
 
-  
 
-  
 
-  
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
 
         
 <div class="footer">
@@ -439,12 +608,12 @@
       </a>
       <div class="share-content hidden">
         
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + tags + '&url=' + http%3A%2F%2Fexample.com%2Ftags%2Findex.html + '" target="_blank" title="Twitter">
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + C%2B%2B%20Workflow%E6%A1%86%E6%9E%B6 + '&url=' + http%3A%2F%2Fexample.com%2F2025%2F05%2F13%2FC-Workflow%25E6%25A1%2586%25E6%259E%25B6%2F + '" target="_blank" title="Twitter">
             <i class="iconfont icon-twitter"></i>
           </a>
         
         
-          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/tags/index.html" target="_blank" title="Facebook">
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2025/05/13/C-Workflow%E6%A1%86%E6%9E%B6/" target="_blank" title="Facebook">
             <i class="iconfont icon-facebooksquare"></i>
           </a>
         

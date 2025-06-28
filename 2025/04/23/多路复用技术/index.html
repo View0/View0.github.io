@@ -13,7 +13,7 @@
   
   <title>
     
-      Tag 
+      多路复用技术 
       
       
       |
@@ -148,21 +148,180 @@
 
 
 
-  <!-- 标签页 url形式：https://yoursite/tags/ -->
-  <div class="container tag-index">
-    <div>
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="tag">中间件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">4</span></li></ul>
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">多路复用技术</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+          2025-06-28 22:18:10
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/C/" title="C++">
+                    #C++
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <blockquote>
+<p>socket的多路复用，指的是单个线程或进程中可以同时处理多个socket的 I&#x2F;O 事件，可以提高整体效率和资源利用率，常见的多路复用机制包括select、poll和epoll。</p>
+</blockquote>
+<blockquote>
+<p>以放羊为例：同步阻塞的方式相当于一个人放羊只可以管理一只，epoll的存在相当于一只“牧羊犬”，将大量羊管理起来，如果某只羊有什么需要，牧羊犬就通知给人，完成相应的处理。</p>
+</blockquote>
+<p>epoll的工作机制：使用两个系统调用来操作，<mark><code>epoll_create</code>创建一个epoll 实例，<code>epoll_ctl</code>增加、修改或删除要控制的文件描述符，<code>epoll_wait</code>则是用于等待事件的发生。</mark></p>
+<p>编程过程中，建议使用epoll：</p>
+<ol>
+<li>epoll效率高，<mark>基于事件通知的方式解决轮询带来的性能瓶颈</mark>，处理大量文件描述符效率高。</li>
+<li><mark>不受描述符数量限制</mark>，select有文件描述符数量上限（通常 1024），epoll无限制。</li>
+<li>内存拷贝少：epoll的系统调用仅在需要数据时进行内存拷贝，减少了系统开销。<br>select每次调用时都要重新传递所有文件描述符集合，并进行内存拷贝；<br>poll则需要传递整个文件描述符数组。<br>epoll<mark>每次只传递发生的事件</mark>，不需要传递所有文件描述符。</li>
+<li><mark>支持边沿触发</mark>：相比于select和poll的水平触发（LT），epoll还支持边沿触发（ET）。<br>LT 是默认的触发模式，<mark>处理器只要发现事件有未处理的数据就会再次通知</mark>；<br>ET 更高效，<mark>它只在状态变化（例如从无数据到有数据）时通知一次</mark>，开发难度稍大但可减少系统调用次数。</li>
+</ol>
+<h2 id="epoll核心原理"><a href="#epoll核心原理" class="headerlink" title="epoll核心原理"></a>epoll核心原理</h2><p>同步阻塞：服务端等待用户端的数据到达，无用户到达就一直阻塞。</p>
+<p>多路复用（<mark>同时监听很多 TCP 连接等待数据就绪，复用的是进程</mark>）：<code>epoll_wait</code>同时监听百万连接的数据是否到达，这些连接上只要有数据到达，它就不会进入阻塞状态；无数据到达则阻塞。</p>
+<p><img src="/../cpp_res/img3.png"></p>
+<p><img src="/../cpp_res/img4.png"></p>
+<p>多路复用相比于同步阻塞的优点：</p>
+<ol>
+<li><mark>减少进程上下文切换的开销</mark>。</li>
+<li><mark>让 CPU 缓存命中率更高，执行效率也更高</mark>：（CPU 硬件的原因）CPU 处理一个进程是有 L1、L2、L3 缓存的，会缓存内存的数据，长时间运行某一个进程，该进程所需的资源在缓存中被命中的概率越大，CPU 执行效率也会更高！</li>
+</ol>
+<h2 id="epoll三个关键函数实现原理"><a href="#epoll三个关键函数实现原理" class="headerlink" title="epoll三个关键函数实现原理"></a>epoll三个关键函数实现原理</h2><ol>
+<li><code>epoll_create</code>：创建epoll的内核对象<code>struct eventpoll</code>，与用户进程打开的文件句柄列表关联起来。</li>
+</ol>
+<p><img src="/../cpp_res/img5.png"></p>
+<p><img src="/../cpp_res/img6.png"></p>
+<ul>
+<li><code>epollwait</code>等待队列：存阻塞的进程，等待内核唤醒。</li>
+<li>就绪描述符队列：存socket连接描述符（就绪的描述符）。</li>
+<li>红黑树：<code>struct epitem</code>理解为一个连接，交给底层管理。</li>
+</ul>
+<ol start="2">
+<li><code>epoll_ctl</code>：将连接添加到<code>eventpoll</code>对象中，底层添加至红黑树中。<br><code>epitem</code>类似于“粘合剂”，可以关联到相应的socket，也可以关联到红黑树。</li>
+</ol>
+<p><img src="/../cpp_res/img7.png"></p>
+<ol start="3">
+<li><code>epoll_wait</code>：等待就绪的事件发生。</li>
+</ol>
+<p><img src="/../cpp_res/img8.png"></p>
+<ul>
+<li>就绪队列中有ready的socket：<code>epoll_wait</code>取走处理，用户进程不会被阻塞。</li>
+<li>就绪队列中没有ready的socket：定义等待队列，<mark>告诉内核自己需要“睡眠”，如果就绪队列中有socket准备好了，内核将自己“唤醒”</mark>，然后主动让出 CPU。</li>
+</ul>
+<h2 id="数据到达处理"><a href="#数据到达处理" class="headerlink" title="数据到达处理"></a>数据到达处理</h2><ol>
+<li>保存数据到socket接收队列</li>
+</ol>
+<p><img src="/../cpp_res/img9.png"></p>
+<ol start="2">
+<li>就绪回调：<code>ep_poll_callback</code>。</li>
+</ol>
+<p><img src="/../cpp_res/img10.png"></p>
+<p><img src="/../cpp_res/img11.png"></p>
+<ul>
+<li><mark>将当前<code>epitem</code>添加到<code>eventpoll</code>的就绪队列中</mark>！</li>
+<li><mark>查看<code>eventpoll</code>的的等待队列上是否有在等待，如果有，就将其唤醒</mark>！</li>
+</ul>
+<h2 id="百万用户高并发"><a href="#百万用户高并发" class="headerlink" title="百万用户高并发"></a>百万用户高并发</h2><p>设想一下如下场景：有100万个客户端同时与一个服务器进程保持着TCP连接，而每一时刻，通常只有几百上千个TCP连接是活跃的(事实上大部分场景都是这种情况)。如何实现这样的高并发？</p>
+<blockquote>
+<p>在select&#x2F;poll时代，服务器进程每次都把这100万个连接告诉操作系统（从用户态复制句柄数据结构到内核态），让操作系统内核去查询这些套接字上是否有事件发生，轮询完成后，再将句柄数据复制到用户态，让服务器应用程序轮询处理已发生的网络事件，这一过程资源消耗较大，因此，select&#x2F;poll一般只能处理几千的并发连接。</p>
+</blockquote>
+<p>epoll的原理及优势：epoll的设计和实现与select完全不同。epoll通过在Linux内核中申请一个简易的文件系统（<mark>文件系统一般用B+树，磁盘IO消耗低，效率很高</mark>），将select&#x2F;poll的调用分为如下三步：</p>
+<ol>
+<li>调用<code>epoll_create</code>建立一个epoll对象（在epoll文件系统中为这个句柄对象分配资源）。</li>
+<li>调用<code>epoll_ctl</code>向epoll对象中添加这100万个连接的套接字。</li>
+<li>调用<code>epoll_wait</code>收集发生的事件的fd资源。</li>
+</ol>
+<p>因此，为实现如上场景，在进程启动时建立一个epoll对象，让后在需要的时候向这个epoll对象添加 &#x2F; 删除连接。<code>epoll_wait</code>的效率非常高，在调用时，并未复制100万个连接的句柄数据，内核也无需遍历全部连接！</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">eventpoll</span>&#123;</span><br><span class="line">    /</span><br><span class="line">*红黑树的根节点，这颗树中存储着所有添加到epoll中的需要监控的事件*</span><br><span class="line">/</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">rb_root</span> rbr;</span><br><span class="line">    /</span><br><span class="line">*双链表中则存放着将要通过epoll_wait返回给用户的满足条件的事件*</span><br><span class="line">/</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">list_head</span> rdlist;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/04/15/%E4%BD%8D%E5%9B%BE%E5%92%8C%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+              2025-06-28 22:18:10
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/C/" title="C++">
+                        #C++
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2025/05/13/C-Workflow%E6%A1%86%E6%9E%B6/" target="_self">
+                <span>Next</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#epoll%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86"><span class="toc-text">epoll核心原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#epoll%E4%B8%89%E4%B8%AA%E5%85%B3%E9%94%AE%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-text">epoll三个关键函数实现原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%88%B0%E8%BE%BE%E5%A4%84%E7%90%86"><span class="toc-text">数据到达处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BE%E4%B8%87%E7%94%A8%E6%88%B7%E9%AB%98%E5%B9%B6%E5%8F%91"><span class="toc-text">百万用户高并发</span></a></li></ol>
+      
     </div>
   </div>
-  
 
   
+<script src="/js/catalog.js"></script>
 
-  
 
-  
 
-  
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
 
         
 <div class="footer">
@@ -439,12 +598,12 @@
       </a>
       <div class="share-content hidden">
         
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + tags + '&url=' + http%3A%2F%2Fexample.com%2Ftags%2Findex.html + '" target="_blank" title="Twitter">
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E6%8A%80%E6%9C%AF + '&url=' + http%3A%2F%2Fexample.com%2F2025%2F04%2F23%2F%25E5%25A4%259A%25E8%25B7%25AF%25E5%25A4%258D%25E7%2594%25A8%25E6%258A%2580%25E6%259C%25AF%2F + '" target="_blank" title="Twitter">
             <i class="iconfont icon-twitter"></i>
           </a>
         
         
-          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/tags/index.html" target="_blank" title="Facebook">
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2025/04/23/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E6%8A%80%E6%9C%AF/" target="_blank" title="Facebook">
             <i class="iconfont icon-facebooksquare"></i>
           </a>
         
