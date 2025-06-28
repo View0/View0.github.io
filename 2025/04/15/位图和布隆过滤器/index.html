@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="John Doe" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
+    
+      位图和布隆过滤器 
+      
+      
+      |
+    
+     Kaziro&#39;s Blog
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/567.jpg" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Kaziro</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">位图和布隆过滤器</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+          2025-06-28 14:31:24
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/C/" title="C++">
+                    #C++
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <blockquote>
+<p><strong>为什么需要位图？</strong></p>
+<p>假设我们有1千万个不同的整数需要存储，每个整数的大小范围是1到1亿。然后，给定任意一个整数X，我们需要判断X是否在刚才的1千万个整数内。这个问题该如何处理呢？</p>
+<p>常规的做法肯定就是先考虑如何存储这1千万个整数，<code>int</code>类型是4字节，可以表示的范围区间是-2147483648~2147483647，所以每个整数都用int来表示是可行的，约需要<code>38.15MB</code>。</p>
+</blockquote>
+<h2 id="位图"><a href="#位图" class="headerlink" title="位图"></a>位图</h2><p><mark><strong>位图其实就是哈希的变形，同样通过映射来处理数据</strong></mark>，只不过位图本身并不存储数据，而是存储标记，通过一个比特位来标记这个数据是否存在，1代表存在，0代表不存在。</p>
+<p><strong>位图通常情况下用在数据量庞大，且数据不重复的情景下判断某个数据是否存在</strong>。</p>
+<p><code>Bytes</code>表示字节，一个字节等于8<code>bit</code>，如果用1个<code>bit</code>来表示一个整数是否存在，那么对于1千万个整数，每个数的范围从1到1亿，就需要1亿个<code>bit</code>，则需要<code>100000000 / 2 ^ 3 / 2 ^ 20</code>，约<code>11.92MB</code>。</p>
+<h3 id="位图接口及C-手撕"><a href="#位图接口及C-手撕" class="headerlink" title="位图接口及C++手撕"></a>位图接口及C++手撕</h3><p><code>bitset</code>提供的：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bitset&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	bitset&lt;8&gt; bs;</span><br><span class="line">	bs.<span class="built_in">set</span>(<span class="number">2</span>); <span class="comment">//设置第2位</span></span><br><span class="line">	bs.<span class="built_in">set</span>(<span class="number">4</span>); <span class="comment">//设置第4位</span></span><br><span class="line">	cout &lt;&lt; bs &lt;&lt; endl; <span class="comment">//00010100</span></span><br><span class="line">        cout &lt;&lt; bs.<span class="built_in">test</span>(<span class="number">2</span>) &lt;&lt; endl; <span class="comment">//1</span></span><br><span class="line">        cout &lt;&lt; bs.<span class="built_in">test</span>(<span class="number">6</span>) &lt;&lt; endl; <span class="comment">//1</span></span><br><span class="line">	bs.<span class="built_in">reset</span>(); <span class="comment">//清空所有位</span></span><br><span class="line">	cout &lt;&lt; bs.<span class="built_in">none</span>() &lt;&lt; endl; <span class="comment">//1</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自己实现：</p>
+<ul>
+<li><code>N = 10000000</code>，即表示该位图可以存储<code>0 ~ 9999999</code>的整数。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="type">size_t</span> N&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitset</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">bitset</span>() <span class="comment">// 开辟空间，向上取整保证足够！</span></span><br><span class="line">    &#123;</span><br><span class="line">        _bs.<span class="built_in">resize</span>(N / <span class="number">32</span> + <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">set</span><span class="params">(<span class="type">size_t</span> x)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">size_t</span> i = x / <span class="number">32</span>; <span class="comment">// 处于数组的第几个空间</span></span><br><span class="line">        <span class="type">size_t</span> j = x % <span class="number">32</span>; <span class="comment">// 处于数组的第几个比特位</span></span><br><span class="line"></span><br><span class="line">        _bs[i] |= (<span class="number">1</span> &lt;&lt; j);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">reset</span><span class="params">(<span class="type">size_t</span> x)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">size_t</span> i = x / <span class="number">32</span>;</span><br><span class="line">        <span class="type">size_t</span> j = x % <span class="number">32</span>;</span><br><span class="line">    </span><br><span class="line">        _bs[i] &amp;= (~(<span class="number">1</span> &lt;&lt; j));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">find</span><span class="params">(<span class="type">size_t</span> x)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">size_t</span> i = x / <span class="number">32</span>;</span><br><span class="line">        <span class="type">size_t</span> j = x % <span class="number">32</span>;</span><br><span class="line">     </span><br><span class="line">        <span class="keyword">return</span> _bs[i] &amp; (<span class="number">1</span> &lt;&lt; j);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	std::vector&lt;<span class="type">int</span>&gt; _bs;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="位图的应用场景"><a href="#位图的应用场景" class="headerlink" title="位图的应用场景"></a>位图的应用场景</h3><ol>
+<li><mark><strong>快速查找某个数据是否在一个集合中</strong></mark>：一堆32位的整数，怎么判断某个数字在这堆数中是否出现过？</li>
+<li>求两个集合的交集<code>std::bitset&lt;N&gt; intersection = bitmapA &amp; bitmapB;</code>、并集<code>std::bitset&lt;N&gt; unionSet = bitmapA | bitmapB;</code>等。</li>
+<li><strong>操作系统中磁盘块标记</strong>：标记使用状态（已分配或未分配）。</li>
+</ol>
+<h3 id="位图的优缺点"><a href="#位图的优缺点" class="headerlink" title="位图的优缺点"></a>位图的优缺点</h3><ul>
+<li><p>位图适合密集型数据的存储和查询，空间复杂度很低！</p>
+</li>
+<li><p>稀疏型数据查询会比较慢（比如查 0~10000 范围存在位图中的数据，实际上只存在 3333 和 9999，会有很多无用查询） -&gt; <strong>优化思路</strong>：多级索引位图，将整个位图划分为多个小块，为每个块维护一个<mark><strong>索引（标志位）</strong></mark> ，查询时，先检查索引确定哪些块包含有效数据，再去子块查询。</p>
+</li>
+</ul>
+<h2 id="布隆过滤器"><a href="#布隆过滤器" class="headerlink" title="布隆过滤器"></a>布隆过滤器</h2><blockquote>
+<p>位图也不是万能的，倘若我们需要存放的1千万个整数的范围是1到100亿怎么办，按道理说，我们申请一个包含100亿个bit的数组就可以了，也是需要1.16GB，太大了，这也是很多电脑和手机承受不起的，那怎么办呢？</p>
+<p><strong>布隆过滤器</strong>就是让我们有办法在原来12.5MB的内存空间下，使用1亿个bit来存放原本需要100亿个bit才能解决的问题。我们的核心思想就是使用hash函数，把1到100亿大小的数值映射到1到1亿个bit内。</p>
+</blockquote>
+<p><img src="/../cpp_res/img2.png"></p>
+<ul>
+<li>用哈希表存储，缺点：浪费空间。</li>
+<li>用位图存储，缺点：不能处理哈希冲突。</li>
+<li>将哈希与位图结合 -&gt; <strong>布隆过滤器</strong>。</li>
+</ul>
+<h3 id="布隆过滤器原理"><a href="#布隆过滤器原理" class="headerlink" title="布隆过滤器原理"></a>布隆过滤器原理</h3><p>布隆过滤器（Bloom Filter）是一种用于<mark><strong>高效判断一个元素是否属于一个集合的概率型数据结构</strong></mark>，它<mark><strong>基于位图（Bitmap）</strong></mark>的概念，但使用了多个哈希函数来实现更高的查找效率。</p>
+<p>布隆过滤器由<strong>一个位数组</strong>和<strong>多个哈希函数</strong>组成：初始时，所有位数组的值都被设置为0</p>
+<ul>
+<li>当要向布隆过滤器中插入一个元素时，该元素经过多个哈希函数的计算，得到多个哈希值，然后将对应的位数组位置设置为1</li>
+<li>当需要判断一个元素是否在集合中时，同样经过多个哈希函数的计算，检查对应的位数组位置是否都为1</li>
+<li>如果有任何一位为0，则可以确定该元素不在集合中；如果所有位都为1，则表示该元素可能在集合中（<strong>存在误判的概率</strong>）。</li>
+</ul>
+<h2 id="海量数据处理"><a href="#海量数据处理" class="headerlink" title="海量数据处理"></a>海量数据处理</h2><ol>
+<li>给40亿个不重复的无符号整数，没排过序。给一个无符号整数，如何快速判断一个数是否在这40亿个数中？</li>
+</ol>
+<blockquote>
+<p>位图。</p>
+</blockquote>
+<ol start="2">
+<li>给定100亿个整数，设计算法找到只出现一次的整数？</li>
+</ol>
+<blockquote>
+<p>两个位图，同样的两个位图对应的映射的数的位置共同表示映射状态：0次 - 00，一次 - 01， 两次 - 10。</p>
+</blockquote>
+<ol start="3">
+<li>给两个文件，分别有100亿个整数，我们只有1G内存，如何找到两个文件交集？</li>
+</ol>
+<blockquote>
+<p>两个位图，对两个文件进行分别遍历文件读取数据映射到位图上，然后对位图进行遍历求交集，同一个位置都为1，那么则为交集。</p>
+</blockquote>
+<ol start="4">
+<li>1个文件有100亿个int，1G内存，设计算法找到出现次数不超过2次的所有整数？</li>
+</ol>
+<blockquote>
+<p>使用两个位图，同样的两个位图对应的映射的数的位置共同表示映射状态：0次 - 00，一次 - 01， 两次 - 10， 三次以上 - 11。</p>
+</blockquote>
+<ol start="5">
+<li>海量数据分布在100台电脑中，想个办法高效统计出这批数据的TOP10？</li>
+</ol>
+<blockquote>
+<p>对于每一个电脑，都构建一个大小为10的堆(选大的构建小堆，选小的构建大堆)，选出当前电脑的TOP10，接着将所有电脑的数据汇总起来，共1000个数据，继续用堆从其中选出TOP10。</p>
+</blockquote>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/03/30/C-%E7%BA%BF%E7%A8%8B%E6%B1%A0/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+              2025-06-28 14:31:24
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/C/" title="C++">
+                        #C++
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%8D%E5%9B%BE"><span class="toc-text">位图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E5%9B%BE%E6%8E%A5%E5%8F%A3%E5%8F%8AC-%E6%89%8B%E6%92%95"><span class="toc-text">位图接口及C++手撕</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E5%9B%BE%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">位图的应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E5%9B%BE%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-text">位图的优缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="toc-text">布隆过滤器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E5%8E%9F%E7%90%86"><span class="toc-text">布隆过滤器原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86"><span class="toc-text">海量数据处理</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2025 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+    <div class="footer-views">
+      
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+      
+          本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        
+      
+          本站访客数<span id="busuanzi_value_site_uv"></span>人
+        
+      
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E4%BD%8D%E5%9B%BE%E5%92%8C%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8 + '&url=' + http%3A%2F%2Fexample.com%2F2025%2F04%2F15%2F%25E4%25BD%258D%25E5%259B%25BE%25E5%2592%258C%25E5%25B8%2583%25E9%259A%2586%25E8%25BF%2587%25E6%25BB%25A4%25E5%2599%25A8%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2025/04/15/%E4%BD%8D%E5%9B%BE%E5%92%8C%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>
