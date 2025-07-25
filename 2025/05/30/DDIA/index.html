@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="John Doe" />
+  <!-- Open Graph Description 简短摘要-->
+  
+  <!-- 用于搜索引擎的文章摘要 -->
+  
+  
+  
+  <title>
+    
+      DDIA 
+      
+      
+      |
+    
+     Kaziro&#39;s Blog
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+    
+<link rel="stylesheet" href="/css/figcaption/mac-block.css">
+
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/wechat.jpg" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Kaziro</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">DDIA</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+          2025-07-25 09:32:20
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+                    #数据库
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <blockquote>
+<p>分布式存储的目标：</p>
+<ul>
+<li>提高数据存储容量：让总体存储容量随节点增多而增大（水平可扩展）；</li>
+<li>提高数据吞吐量：让总体吞吐量随节点增多而增大（水平可扩展），比如将一个大文件切片存储在多个主机内，要获取该文件时即可同时从多个主机同时进行下载；</li>
+<li>提高可靠性 &#x2F; 可用性：部分节点故障时数据不丢失 &#x2F; 部分节点失效不影响整个系统的数据读写（容错性）；</li>
+</ul>
+</blockquote>
+<h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><blockquote>
+<p>分布式数据库系统三种主流的复制 &#x2F; 变更方法：单领导者（single leader，单主），多领导者（multi leader，多主） 和 无领导者（leaderless，无主）。</p>
+</blockquote>
+<h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>每一次向数据库的写入操作都需要传播到所有副本上，否则副本就会包含不一样的数据，最常见的解决方案是<strong>基于领导者的复制（主从复制）</strong> ：</p>
+<ol>
+<li>分布式系统中一个副本作为<strong>主库</strong>，客户端向数据库写入数据时，请求交于<strong>主库写入</strong>，其会将新数据写入其本地存储。</li>
+<li>其他副本作为<strong>从库</strong>，每当主库将新数据写入本地存储时，它也会将数据变更发送给所有从库，称为<strong>复制日志或变更流</strong>。从库拉取日志并相应更新其本地数据库副本，按与主库相同的处理顺序来执行写入。</li>
+</ol>
+<p><strong>复制日志的方式</strong>：主库记录执行的每个写入语句；预写式日志（WAL，更新前先记入日志）；逻辑日志（对复制和存储引擎使用不同的日志格式）；结合触发器实现应用层的复制。</p>
+<ol start="3">
+<li>当客户端读取数据时，它可以向主库或任一从库进行查询。</li>
+</ol>
+<ul>
+<li>从用户的角度来看：<strong>主库可写可读，从库只读</strong>。</li>
+</ul>
+<h3 id="主库失效"><a href="#主库失效" class="headerlink" title="主库失效"></a>主库失效</h3><blockquote>
+<p>主库失效处理起来相当棘手：其中一个从库需要被提升为新的主库，需要重新配置客户端，以将它们的写操作发送给新的主库，其他从库需要开始拉取来自新主库的数据变更。这个过程被称为<strong>故障切换（failover）</strong> 。</p>
+</blockquote>
+<p>故障切换可以手动执行，但更多情况下开发人员还是希望分布式系统具备自动的故障切换策略，通常步骤如下：</p>
+<ol>
+<li><strong>确认主库失效</strong>：大多数系统采用<strong>超时机制</strong>来判断，节点间频繁相互传递消息，如果某个节点在一段时间内无响应，就认为该节点失效。</li>
+<li><strong>选择新的主库</strong>：选举投票机制（Redis）或选定的控制器节点来指定，主库的最佳替代节点通常是拥有旧主库最新数据的从库（<strong>最小化数据损失</strong>）。</li>
+<li><strong>重配系统以启用新的主库</strong>：如果旧主库恢复，分布式系统需要确保旧主库意识到新主库的存在，并称为一个从库。</li>
+</ol>
+<h3 id="复制延迟"><a href="#复制延迟" class="headerlink" title="复制延迟"></a>复制延迟</h3><p>当应用程序从异步从库读取时，如果从库落后，它可能会看到过时的信息。这会导致数据库中出现明显的不一致：同时对主库和从库执行相同的查询，可能得到不同的结果，因为并非所有的写入都反映在从库中。<strong>这种不一致只是一个暂时的状态 —— 如果停止写入数据库并等待一段时间，从库最终会赶上并与主库保持一致（</strong> <strong>最终一致性</strong> <strong>）</strong> 。</p>
+<p><strong>复制延迟：写入主库到反映至从库之间的延迟</strong>，可能仅仅是几分之一秒，在实践中并不显眼。但如果系统在接近极限的情况下运行，或网络中存在问题时，延迟可以轻而易举地超过几秒，甚至达到几分钟。</p>
+<h3 id="多主复制"><a href="#多主复制" class="headerlink" title="多主复制"></a>多主复制</h3><blockquote>
+<p>在单个数据中心内部使用多个主库的配置没有太大意义，因为其导致的复杂性已经超过了能带来的好处。</p>
+<p>但在一些情况下，这种配置也是合理的：假设有一个数据库，副本分散在好几个不同的数据中心（可能用以容忍单个数据中心的故障，或者为了在地理上更接近用户）。</p>
+<p>多主分布式系统中，允许独立写入，用户的体验更好。但多主复制也有一个较大的缺点：<strong>两个不同的数据中心可能会同时修改相同的数据，写入冲突是必须解决的</strong>。</p>
+</blockquote>
+<p><strong>复制拓扑（replication</strong> <strong>topology</strong> <strong>）</strong> 用来描述写入操作从一个节点传播到另一个节点的通信路径。最常见的拓扑是全部到全部，其中每个主库都将其写入发送给其他所有的主库。</p>
+<h3 id="多主写入冲突"><a href="#多主写入冲突" class="headerlink" title="多主写入冲突"></a>多主写入冲突</h3><blockquote>
+<p>典型场景：两个用户同时编辑一个页面，用户<code>1</code>将页面的标题从<code>A</code>改为<code>B</code>，同时用户<code>2</code>将页面的标题从<code>A</code>改为<code>C</code>，用户更改应用到本地主库，但异步复制时，出现写入冲突问题。</p>
+</blockquote>
+<p>应对写入冲突的方式：</p>
+<ol>
+<li><strong>同步与异步冲突检测</strong>：使冲突检测同步，即等待写入被复制到所有副本，再告诉用户写入成功。（此方式失去了多主复制允许独立写入的优势）</li>
+<li><strong>避免冲突</strong>：<strong>如果应用程序可以确保特定记录的所有写入都通过同一个主库，那么冲突就不会发生</strong>。由于许多的多主复制实现在处理冲突时处理得相当不好，避免冲突是一个经常被推荐的方法。</li>
+<li><strong>收敛至一致的状态</strong>：配合时间戳、优先级或其他方法实现冲突合并。</li>
+<li><strong>自定义冲突解决逻辑</strong>：大多数多主复制工具允许使用应用程序代码编写冲突解决逻辑。</li>
+</ol>
+<h3 id="无主复制"><a href="#无主复制" class="headerlink" title="无主复制"></a>无主复制</h3><blockquote>
+<p>一些数据存储系统采用不同的方法，放弃主库的概念，并允许任何副本直接接受来自客户端的写入。在一些无主复制的实现中，客户端直接将写入发送到几个副本中，而另一些情况下，由一个<strong>协调者（coordinator）</strong> 节点代表客户端进行写入，但协调者不执行特定的写入顺序。</p>
+</blockquote>
+<h2 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h2><blockquote>
+<p>分区通常与复制结合使用，使得每个分区的副本存储在多个节点上。这意味着，即使每条记录属于一个分区，它仍然可以存储在多个不同的节点上以获得容错能力。</p>
+</blockquote>
+<h3 id="键值数据的分区"><a href="#键值数据的分区" class="headerlink" title="键值数据的分区"></a>键值数据的分区</h3><p>如果分区是不公平的，一些分区比其他分区有更多的数据或查询，我们称之为<strong>偏斜（</strong> <strong>skew</strong> <strong>）</strong> 。数据偏斜的存在使分区效率下降很多：在极端的情况下，所有的负载可能压在一个分区上，其余 9 个节点空闲的，瓶颈落在这一个繁忙的节点上。不均衡导致的高负载的分区被称为<strong>热点（hot spot）</strong> 。</p>
+<ol>
+<li>根据键的范围分区。（键的范围不一定均匀分布，因为数据也很可能不均匀分布）</li>
+<li>根据键的散列分区。（一个好的散列函数可以将偏斜的数据均匀分布）</li>
+</ol>
+<p>一致性哈希：用于跨互联网级别的缓存系统，使用随机选择的<strong>分区边界（partition boundaries）</strong> 来避免中央控制或分布式共识的需要。</p>
+<p><strong>哈希分区可以帮助减少热点</strong>。但是，它不能完全避免它们：在极端情况下，所有的读写操作都是针对同一个键的，所有的请求都会被路由到同一个分区。</p>
+<h3 id="分区与次级索引"><a href="#分区与次级索引" class="headerlink" title="分区与次级索引"></a>分区与次级索引</h3><blockquote>
+<p>如果只通过主键访问记录，我们可以从该键确定分区，并使用它来将读写请求路由到负责该键的分区。</p>
+<p>如果涉及次级索引，情况会变得更加复杂。次级索引通常并不能唯一地标识记录，而是一种搜索记录中出现特定值的方式：查找用户<code>123</code>的所有操作，查找包含词语<code>hogwash</code>的所有文章，查找所有颜色为红色的车辆等等。</p>
+<p><strong>次级索引的问题是它们不能整齐地映射到分区</strong>。有两种用次级索引对数据库进行分区的方法：基于文档的分区（document-based）和基于关键词（term-based）的分区。</p>
+</blockquote>
+<p>基于文档的次级索引进行分区：</p>
+<p>例如有一个销售二手车的网站，每个列表都有唯一的<code>ID</code>，称为文档<code>ID</code>，利用文档<code>ID</code>对数据库进行分区。若允许用户通过颜色和厂商过滤，需要一个在颜色和厂商上的次级索引。<br><strong>每个分区是完全独立的：每个分区维护自己的次级索引</strong>，仅覆盖该分区中的文档，它不关心存储在其他分区的数据，无论何时你需要写入数据库（添加，删除或更新文档），只需处理包含你正在编写的文档 ID 的分区即可。</p>
+<p>基于关键词的次级索引进行分区：<br>构建一个覆盖所有分区数据的<strong>全局索引</strong>，而不是给每个分区创建自己的次级索引（本地索引）。<br>关键词分区的全局索引优于文档分区索引的地方点是它可以使读取更有效率：不需要<strong>分散 &#x2F; 收集</strong>所有分区，客户端只需要向包含关键词的分区发出请求。<br>全局索引的缺点在于<strong>写入速度较慢且较为复杂</strong>，因为写入单个文档现在可能会影响索引的多个分区（文档中的每个关键词可能位于不同的分区或者不同的节点上） 。</p>
+<h3 id="分区再平衡"><a href="#分区再平衡" class="headerlink" title="分区再平衡"></a>分区再平衡</h3><blockquote>
+<p>随着时间的推移，数据库会有各种变化：</p>
+<ul>
+<li>查询吞吐量增加，所以你想要添加更多的 CPU 来处理负载。</li>
+<li>数据集大小增加，所以你想添加更多的磁盘和 RAM 来存储它。</li>
+<li>机器出现故障，其他机器需要接管故障机器的责任。<br>所有这些更改都需要数据和请求从一个节点移动到另一个节点。 将负载从集群中的一个节点向另一个节点移动的过程称为<strong>再平衡（rebalancing）</strong> 。</li>
+</ul>
+<p>无论使用哪种分区方案，再平衡通常都要满足一些最低要求：</p>
+<ul>
+<li>再平衡之后，负载（数据存储，读取和写入请求）应该在集群中的节点之间公平地共享。</li>
+<li>再平衡发生时，数据库应该继续接受读取和写入。</li>
+<li>节点之间只移动必须的数据，以便快速再平衡，并减少网络和磁盘 I&#x2F;O 负载。</li>
+</ul>
+</blockquote>
+<p>再平衡策略：</p>
+<ol>
+<li>hash mod N：<code>N</code>是节点数，通过直接取模来散列分区。<strong>如果节点数量 N 发生变化，大多数键将需要从一个节点移动到另一个节点</strong>。</li>
+<li>固定数量的分区：运行在 10 个节点的集群上的数据库被拆分为 1000 个分区，每个节点管理 100 个分区。如果一个节点被添加到集群中，新节点可以从当前每个节点中<strong>窃取</strong>一些分区，<strong>直到分区再次公平分配</strong>。</li>
+<li><strong>动态分区</strong>：当分区增长到超过配置的大小时（在 HBase 上，默认值是 10 GB），会被分成两个分区，每个分区约占一半的数据；与之相反，如果大量数据被删除并且分区缩小到某个阈值以下，则可以将其与相邻分区合并。</li>
+</ol>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><blockquote>
+<p>从概念上讲，事务中的所有读写操作被视作单个操作来执行：<strong>整个事务要么成功提交（commit），要么失败中止（abort）或回滚（rollback）</strong> 。如果失败，应用程序可以安全地重试。</p>
+</blockquote>
+<h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><ol>
+<li><strong>原子性（Atomicity）</strong> ：一个事务中的所有操作，要么全部完成，要么全部不完成。</li>
+<li><strong>一致性（Consistency）</strong> ：是指事务操作前和操作后，数据满足完整性约束，数据库保持一致性状态。</li>
+<li><strong>隔离性（Isolation）</strong> ：数据库允许多个并发事务同时对其数据进行读写和修改的能力，<strong>隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致</strong>，因为多个事务同时使用相同的数据时，不会相互干扰，每个事务都有一个完整的数据空间，对其他并发事务是隔离的。</li>
+<li><strong>持久性（Durability）</strong> ：事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。</li>
+</ol>
+<h3 id="隔离级别（以MySQL为例）"><a href="#隔离级别（以MySQL为例）" class="headerlink" title="隔离级别（以MySQL为例）"></a>隔离级别（以MySQL为例）</h3><p>SQL 标准提出了四种隔离级别来规避这些现象，<strong>隔离级别越高，性能效率就越低</strong>：</p>
+<p><strong>读未提交 RU</strong> <strong>（</strong> <strong>read uncommitted</strong> <strong>）</strong> ：指一个事务还没提交时，它做的变更就能被其他事务看到；</p>
+<p><strong>读已提交 RC（</strong> <strong>read committed</strong> <strong>）</strong> ：指一个事务提交之后，它做的变更才能被其他事务看到；</p>
+<p><strong>可重复读 RR</strong> <strong>（</strong> <strong>repeatable read</strong> <strong>）</strong> ：指一个事务执行过程中看到的数据，一直跟这个事务启动时看到的数据是一致的，<strong>MySQL InnoDB 引擎的默认隔离级别</strong>（<strong>MySQL 可重复读隔离级别并没有彻底解决幻读</strong> <strong>，只是很大程度上避免了幻读现象的发生</strong>）；</p>
+<p><strong>串行化</strong> <strong>（</strong> <strong>serializable</strong> <strong>）</strong> ：会对记录加上<strong>读写锁</strong>，在多个事务对这条记录进行读写操作时，如果发生了读写冲突的时候，后访问的事务必须等前一个事务执行完成，才能继续执行；</p>
+<h2 id="分布式系统的潜在问题"><a href="#分布式系统的潜在问题" class="headerlink" title="分布式系统的潜在问题"></a>分布式系统的潜在问题</h2><blockquote>
+<p>分布式系统可能发生一些问题：</p>
+<ul>
+<li>当你尝试通过网络发送数据包时，<strong>数据包可能会丢失或任意延迟</strong>。同样，答复可能会丢失或延迟，所以如果你没有得到答复，你不知道消息是否发送成功了。</li>
+<li><strong>节点的时钟可能会与其他节点显著不同步</strong>（尽管你尽最大努力设置 NTP），它可能会突然跳转或跳回，依靠它是很危险的，因为你很可能没有好的方法来测量你的时钟的错误间隔。</li>
+<li>一个进程可能会在其执行的任何时候暂停一段相当长的时间（可能是因为停止所有处理的垃圾收集器），被其他节点宣告死亡，然后再次复活，却没有意识到它被暂停了。</li>
+</ul>
+<p>检测系统故障 → 容忍故障 &#x2F; 解决故障。</p>
+</blockquote>
+<h2 id="一致性与共识"><a href="#一致性与共识" class="headerlink" title="一致性与共识"></a>一致性与共识</h2><blockquote>
+<p>分布式一致性主要关于<strong>在面对延迟和故障时如何协调副本间的状态</strong>。</p>
+<p>大多数数据库保证的是<strong>最终一致性</strong>，即若用户停止向数据库写入数据并等待一段不确定的时间，那么最终所有的读取请求都会返回相同的值（<strong>不一致性是暂时的，最终都会自行解决</strong>）。</p>
+<p>共识：<strong>让所有的节点对某件事达成一致</strong>。</p>
+</blockquote>
+<h3 id="线性一致性"><a href="#线性一致性" class="headerlink" title="线性一致性"></a>线性一致性</h3><blockquote>
+<p>线性一致性：<strong>使系统看起来好像只有一个数据副本</strong>。</p>
+<ol>
+<li>单主复制。（可能线性一致）</li>
+<li>共识算法。（线性一致）</li>
+<li>多主复制。（非线性一致）</li>
+<li>无主复制。（也许不是线性一致的）</li>
+</ol>
+</blockquote>
+<h3 id="线性一致性的代价"><a href="#线性一致性的代价" class="headerlink" title="线性一致性的代价"></a>线性一致性的代价</h3><p>网络中需要在线性一致性和可用性之间做出选择 → CAP原理：</p>
+<p><strong>C：一致性</strong>，在分布式系统中，所有的节点在同一时刻看到的数据都是相同的。</p>
+<p><strong>A：可用性</strong>，系统必须一直保持可操作状态，对请求给予响应，不保证获取到最新的数据。</p>
+<p><strong>P：分区容忍性</strong>，即使网络通信发生故障，导致系统被分割成多个部分无法互相通信，系统仍然需要继续运行并提供服务。</p>
+<p><strong>CA</strong> <strong>无法同时满足</strong>，一般是 <strong>CP（网络分区发生时，系统会拒绝一些操作保证数据的一致性）</strong> 或者 <strong>AP（网络分区发生时，系统会继续处理请求，可能返回旧的数据）</strong> 。</p>
+<p>满足 CP 的协议：</p>
+<ul>
+<li>Zookeeper，分布式协调服务，牺牲部分可用性。</li>
+<li>Raft 一致性协议，保证强一致性。</li>
+</ul>
+<p>满足 AP 的协议：</p>
+<ul>
+<li>Redis：异步复制，可能不一致；节点可能故障，无法及时同步。</li>
+</ul>
+<h3 id="分布式事务与共识"><a href="#分布式事务与共识" class="headerlink" title="分布式事务与共识"></a>分布式事务与共识</h3><blockquote>
+<p>如果存在节点崩溃的可能性，则不可能达到完全共识的效果。</p>
+<p>如果一个事务涉及多个节点，仅向所有节点发送提交请求并独立提交每个节点的事务可能违反原子性：提交在某些节点上成功，而在其他节点上失败。</p>
+</blockquote>
+<p>两阶段提交（<code>2PC</code>）：一种用于实现跨多个节点的原子事务提交的算法，即确保所有节点提交或所有节点中止。</p>
+<p><code>2PC</code>有新组件：<strong>协调者</strong> <strong>&#x2F; 事务管理器</strong>（单独进程 &#x2F; 服务），<code>2PC</code>事务以应用于多个数据库节点（<strong>参与者</strong>）上读写数据开始。当应用准备提交时，协调者开始阶段 1：它发送一个<strong>准备</strong>请求到每个节点，询问它们是否能够提交。</p>
+<ul>
+<li>如果所有参与者都回答 “是”，表示它们已经准备好提交，那么协调者在阶段 2 发出<strong>提交（commit）</strong> 请求，然后提交真正发生。</li>
+<li>如果任意一个参与者回复了 “否”，则协调者在阶段 2 中向所有节点发送<strong>中止（abort）</strong> 请求。</li>
+</ul>
+<p><strong>潜在问题</strong>：<strong>存在<strong><strong>单点故障</strong></strong>问题</strong>，若任何一个准备请求失败或者超时，协调者就会中止事务。一旦参与者收到了准备请求并投了 “是”，就不能再单方面放弃 —— 必须等待协调者回答事务是否已经提交或中止。如果此时协调者崩溃或网络出现故障，参与者什么也做不了只能等待。参与者的这种事务状态称为<strong>存疑（in doubt）的或不确定（uncertain 的</strong>。</p>
+<p>三阶段提交（<code>3PC</code>），协调者和参与者都引入超时机制。</p>
+<ol>
+<li><strong>CanCommit 阶段（询问阶段）</strong> ：协调者询问所有参与者是否可以进行事务提交，参与者回复是否能够提交。</li>
+<li><strong>PreCommit 阶段（预提交阶段）</strong> ：协调者会发送PreCommit消息给所有参与者，参与者执行事务但不提交，如果有人不行就全部中止</li>
+<li><strong>DoCommit 阶段（提交阶段）</strong> ：如果所有参与者成功预提交（返回 ACK），协调者发送 DoCommit 请求，要求提交事务；如果有任何参与者未响应或超时，协调者发送 Abort 请求终止事务。</li>
+</ol>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2025/05/13/C-Workflow%E6%A1%86%E6%9E%B6/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="Update time"></i>
+              2025-07-25 09:32:20
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="Tags"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+                        #数据库
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6"><span class="toc-text">复制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="toc-text">主从复制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E5%BA%93%E5%A4%B1%E6%95%88"><span class="toc-text">主库失效</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E5%BB%B6%E8%BF%9F"><span class="toc-text">复制延迟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%B8%BB%E5%A4%8D%E5%88%B6"><span class="toc-text">多主复制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%B8%BB%E5%86%99%E5%85%A5%E5%86%B2%E7%AA%81"><span class="toc-text">多主写入冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E4%B8%BB%E5%A4%8D%E5%88%B6"><span class="toc-text">无主复制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%8C%BA"><span class="toc-text">分区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%86%E5%8C%BA"><span class="toc-text">键值数据的分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%8C%BA%E4%B8%8E%E6%AC%A1%E7%BA%A7%E7%B4%A2%E5%BC%95"><span class="toc-text">分区与次级索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%8C%BA%E5%86%8D%E5%B9%B3%E8%A1%A1"><span class="toc-text">分区再平衡</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1"><span class="toc-text">事务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ACID"><span class="toc-text">ACID</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%EF%BC%88%E4%BB%A5MySQL%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-text">隔离级别（以MySQL为例）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%BD%9C%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="toc-text">分布式系统的潜在问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E4%B8%8E%E5%85%B1%E8%AF%86"><span class="toc-text">一致性与共识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-text">线性一致性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E4%B8%80%E8%87%B4%E6%80%A7%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="toc-text">线性一致性的代价</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E4%B8%8E%E5%85%B1%E8%AF%86"><span class="toc-text">分布式事务与共识</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          
+              <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+                <i class="iconfont icon-github"></i>
+              </a>
+              
+        </li>
+        
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2025 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+    <div class="footer-views">
+      
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+      
+          本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        
+      
+          本站访客数<span id="busuanzi_value_site_uv"></span>人
+        
+      
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + DDIA + '&url=' + http%3A%2F%2Fexample.com%2F2025%2F05%2F30%2FDDIA%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://example.com/2025/05/30/DDIA/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>
